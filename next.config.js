@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    // ¡ADVERTENCIA! Esto permite que el build de producción se complete incluso si hay errores de ESLint.
     ignoreDuringBuilds: true,
   },
   images: {
@@ -13,7 +12,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.notion.so',
+        hostname: 'www.notion.so',
         pathname: '/**',
       },
       {
@@ -21,7 +20,15 @@ const nextConfig = {
         hostname: 'placehold.co',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'buenosaires.gob.ar',
+        pathname: '/**',
+      },
     ],
+  },
+  experimental: {
+    serverActions: {},
   },
 };
 
