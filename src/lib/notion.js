@@ -1,14 +1,22 @@
-const { Client } = require('@notionhq/client');
-const { createClient } = require('@supabase/supabase-js');
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { Client } from '@notionhq/client';
+import { createClient } from '@supabase/supabase-js';
 
-if (!process.env.NOTION_API_KEY) throw new Error('❌ FALTA NOTION_API_KEY');
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('❌ FALTAN VARIABLES DE SUPABASE');
+// 🧩 Validar variables de entorno
+if (!process.env.NOTION_API_KEY)
+  throw new Error('❌ FALTA NOTION_API_KEY');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)
+  throw new Error('❌ FALTAN VARIABLES DE SUPABASE');
 
+// 🔗 Inicializar clientes
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-// 🔍 Leer circuitos desde base de datos en Notion
-async function fetchCircuitosFromNotion() {
+// 🧭 Leer circuitos desde Notion
+export async function fetchCircuitosFromNotion() {
   try {
     const response = await notion.databases.query({
       database_id: process.env.DATABASE_CIRCUITOS_ID,
@@ -16,35 +24,38 @@ async function fetchCircuitosFromNotion() {
       sorts: [{ property: 'NombreCircuito', direction: 'ascending' }]
     });
 
-    return response.results.map((page) => {
-      const props = page.properties;
+    return response.results
+      .map((page) => {
+        const props = page.properties;
 
-      const circuito = {
-        id: page.id,
-        NombreCircuito: props["NombreCircuito"]?.title?.[0]?.plain_text?.trim() || null,
-        Alias: props["Alias"]?.rich_text?.[0]?.plain_text?.trim() || null,
-        Descripcion: props["Descripcion"]?.rich_text?.[0]?.plain_text?.trim() || null,
-        Dias: props["Dias"]?.multi_select?.map(d => d.name) || [],
-        Horarios: props["Horarios"]?.multi_select?.map(h => h.name) || [],
-        Distancia: props["Distancia"]?.number ?? null,
-        Estado: props["Estado"]?.checkbox ?? false,
-        Foto: props["Foto"]?.rich_text?.[0]?.plain_text?.trim() || null,
-        Localidad: props["Localidad"]?.select?.name || null,
-        url: `https://www.notion.so/${page.id.replace(/-/g, '')}`
-      };
+        const circuito = {
+          id: page.id,
+          NombreCircuito:
+            props['NombreCircuito']?.title?.[0]?.plain_text?.trim() || null,
+          Alias: props['Alias']?.rich_text?.[0]?.plain_text?.trim() || null,
+          Descripcion:
+            props['Descripcion']?.rich_text?.[0]?.plain_text?.trim() || null,
+          Dias: props['Dias']?.multi_select?.map((d) => d.name) || [],
+          Horarios: props['Horarios']?.multi_select?.map((h) => h.name) || [],
+          Distancia: props['Distancia']?.number ?? null,
+          Estado: props['Estado']?.checkbox ?? false,
+          Foto: props['Foto']?.rich_text?.[0]?.plain_text?.trim() || null,
+          Localidad: props['Localidad']?.select?.name || null,
+          url: `https://www.notion.so/${page.id.replace(/-/g, '')}`
+        };
 
-      if (!circuito.NombreCircuito) return null;
-      return circuito;
-    }).filter(Boolean);
+        if (!circuito.NombreCircuito) return null;
+        return circuito;
+      })
+      .filter(Boolean);
   } catch (error) {
     console.error('❌ Error al obtener circuitos desde Notion:', error.message);
     return [];
   }
 }
-module.exports.fetchCircuitosFromNotion = fetchCircuitosFromNotion;
 
 // 🔗 Combinar datos de Notion con Supabase
-async function getCircuitos() {
+export async function getCircuitos() {
   try {
     const notionCircuitos = await fetchCircuitosFromNotion();
 
@@ -54,7 +65,7 @@ async function getCircuitos() {
 
     if (error) {
       console.error('❌ Error Supabase:', error.message);
-      return notionCircuitos.map(c => ({
+      return notionCircuitos.map((c) => ({
         ...c,
         cupoRestante: '—',
         cantidad_inscriptos: 0,
@@ -63,8 +74,8 @@ async function getCircuitos() {
       }));
     }
 
-    return notionCircuitos.map(c => {
-      const op = supabaseData.find(s => s.id === c.id);
+    return notionCircuitos.map((c) => {
+      const op = supabaseData.find((s) => s.id === c.id);
       return {
         id: c.id,
         nombre: c.NombreCircuito,
@@ -84,15 +95,14 @@ async function getCircuitos() {
         url: c.url || null
       };
     });
-
   } catch (error) {
     console.error('❌ Error al combinar circuitos:', error.message);
     return [];
   }
 }
-module.exports.getCircuitos = getCircuitos;
-// 🔍 Leer bloques de contenido editorial desde una página de Notion
-async function fetchPageBlocks(pageId) {
+
+// 🧱 Leer bloques de contenido editorial desde una página de Notion
+export async function fetchPageBlocks(pageId) {
   try {
     const blocks = [];
     let cursor = undefined;
@@ -100,7 +110,7 @@ async function fetchPageBlocks(pageId) {
     do {
       const response = await notion.blocks.children.list({
         block_id: pageId,
-        start_cursor: cursor,
+        start_cursor: cursor
       });
 
       blocks.push(...response.results);
@@ -113,4 +123,3 @@ async function fetchPageBlocks(pageId) {
     return [];
   }
 }
-module.exports.fetchPageBlocks = fetchPageBlocks;

@@ -2,6 +2,8 @@
   "name": "mi-proyecto-caminatas",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "main": "middleware.js",
   "scripts": {
     "dev": "next dev",
     "dev:insecure": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 next dev",
@@ -51,8 +53,13 @@
     "typescript": "^5",
     "unimported": "^1.31.1"
   },
-  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
-  "main": "middleware.js",
-  "keywords": [],
+  "description": "Proyecto Next.js para caminatas terapéuticas, con integración Notion y Supabase.",
+  "keywords": [
+    "nextjs",
+    "supabase",
+    "notion",
+    "caminatas",
+    "salud"
+  ],
   "license": "ISC"
 }

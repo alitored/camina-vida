@@ -1,4 +1,3 @@
-// app/api/login/route.ts
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -16,7 +15,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
@@ -25,5 +24,6 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: false }, { status: 401 });
 }
 
-/* Force Next.js to treat this route as dynamic (optional but safe) */
+// FORZAR A NEXT.JS A RECONOCER EL ARCHIVO COMO API ROUTE
 export const dynamic = 'force-dynamic';
+export {};
