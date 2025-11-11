@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import CircuitoCard from './CircuitoCard';
+import CircuitoCardCirc from './CircuitoCardCirc'; // ✅ Nombre correcto
 import FiltrosCircuitos from '@/components/FiltrosCircuitos';
 
 export default function CircuitosClient({ circuitosIniciales = [] }) {
@@ -41,26 +41,24 @@ export default function CircuitosClient({ circuitosIniciales = [] }) {
         {circuitosFiltrados.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {circuitosFiltrados.map((c) => (
-              <CircuitoCard
-  key={c.id}
-  modoHome={true}
-  circuito={{
-    id: c.id,
-    nombre: c.nombre || '—',
-    descripcion: c.descripcion || '—',
-    localidad: c.localidad || '—',
-    foto: c.foto || '/images/circuitos/default.jpg',
-    estado: c.estado ?? false,
-    distancia: c.distancia_metros ?? null,
-    dias: c.dias || [],
-    horarios: c.horarios || [],
-    url: c.url || null,
-    punto_encuentro: c.punto_encuentro || null,
-    alias: c.alias || null,
-    cupo_total: c.cupo_restante ?? null
-  }}
-/>
-
+              <CircuitoCardCirc // ✅ Nombre corregido
+                key={c.id}
+                circuito={{
+                  id: c.id,
+                  nombre: c.nombre || '—',
+                  descripcion: c.descripcion || '—',
+                  localidad: c.localidad || '—',
+                  foto: c.foto || '/images/circuitos/default.jpg',
+                  estado: c.estado ?? false,
+                  distancia: c.distancia_metros ?? null,
+                  dias: c.dias || [],
+                  horarios: c.horarios || [],
+                  punto_encuentro: c.punto_encuentro || null,
+                  alias: c.alias || null,
+                  cupo_total: c.cupo_restante ?? null,
+                }}
+                mostrarBotonReserva={true} // ✅ Prop requerida
+              />
             ))}
           </div>
         ) : (
