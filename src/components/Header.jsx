@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import LoginButton from './LoginButton'; // 👈 nuevo import
+import LoginButton from './LoginButton';
 
 export default function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -19,7 +19,7 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Marca con logo PNG */}
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-3" aria-label="Inicio Camina Vida">
             <div className="relative w-[160px] h-[58px] sm:w-[192px] sm:h-[70px]">
               <Image
@@ -37,12 +37,14 @@ export default function Header() {
           <nav className="hidden md:flex gap-6 items-center text-sm font-semibold text-muted">
             <button onClick={() => irASeccionHome('#beneficios')} className="hover:text-verde-oscuro transition">Beneficios</button>
             <button onClick={() => irASeccionHome('#metodo')} className="hover:text-verde-oscuro transition">Método</button>
-            <button onClick={() => irASeccionHome('#circuitos')} className="hover:text-verde-oscuro transition">Circuitos</button>
+            
+            {/* ✅ CAMBIO: ahora es un Link a /caminatas */}
+            <Link href="/caminatas" className="hover:text-verde-oscuro transition">Caminatas</Link>
+            
             <button onClick={() => irASeccionHome('#planes')} className="hover:text-verde-oscuro transition">Planes</button>
             <Link href="/nosotros" className="hover:text-verde-oscuro transition">Nosotros</Link>
 
-            {/* Botones de acción */}
-            <LoginButton /> {/* 👈 login azul */}
+            <LoginButton />
             <button
               onClick={() => setMostrarModal(true)}
               className="btn btn-small btn-primary"
@@ -65,21 +67,53 @@ export default function Header() {
 
         {/* Menú móvil */}
         {menuAbierto && (
-          <div className="md:hidden px-4 pb-4 space-y-3 text-sm font-semibold text-muted">
-            <button onClick={() => irASeccionHome('#beneficios')}>Beneficios</button>
-            <button onClick={() => irASeccionHome('#metodo')}>Método</button>
-            <button onClick={() => irASeccionHome('#circuitos')}>Circuitos</button>
-            <button onClick={() => irASeccionHome('#planes')}>Planes</button>
-            <Link href="/nosotros" onClick={() => setMenuAbierto(false)}>Nosotros</Link>
+          <div className="md:hidden px-4 pb-4 space-y-2">
+            <button
+              onClick={() => irASeccionHome('#beneficios')}
+              className="block w-full text-left px-4 py-2.5 text-sm font-semibold text-muted hover:text-verde-oscuro rounded-lg transition"
+            >
+              Beneficios
+            </button>
+            <button
+              onClick={() => irASeccionHome('#metodo')}
+              className="block w-full text-left px-4 py-2.5 text-sm font-semibold text-muted hover:text-verde-oscuro rounded-lg transition"
+            >
+              Método
+            </button>
+            
+            {/* ✅ CAMBIO: ahora es un Link a /caminatas */}
+            <Link
+              href="/caminatas"
+              onClick={() => setMenuAbierto(false)}
+              className="block w-full text-left px-4 py-2.5 text-sm font-semibold text-muted hover:text-verde-oscuro rounded-lg transition"
+            >
+              Caminatas
+            </Link>
+            
+            <button
+              onClick={() => irASeccionHome('#planes')}
+              className="block w-full text-left px-4 py-2.5 text-sm font-semibold text-muted hover:text-verde-oscuro rounded-lg transition"
+            >
+              Planes
+            </button>
+            <Link
+              href="/nosotros"
+              onClick={() => setMenuAbierto(false)}
+              className="block w-full text-left px-4 py-2.5 text-sm font-semibold text-muted hover:text-verde-oscuro rounded-lg transition"
+            >
+              Nosotros
+            </Link>
 
-            <LoginButton /> {/* 👈 también visible en móvil */}
+            <div className="pt-2">
+              <LoginButton />
+            </div>
 
             <button
               onClick={() => {
                 setMenuAbierto(false);
                 setMostrarModal(true);
               }}
-              className="btn btn-primary w-full"
+              className="mt-2 w-full px-4 py-2.5 text-sm font-semibold text-white bg-verde hover:bg-verde-oscuro rounded-lg transition"
             >
               Reservá
             </button>

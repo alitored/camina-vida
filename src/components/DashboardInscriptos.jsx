@@ -1,19 +1,71 @@
+// src/components/DashboardInscriptos.jsx
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import supabase from '@/lib/supabase';
 
-export default function DashboardInscriptos({ inscriptosFiltrados = [] }) {
+export default function DashboardInscriptos() {
+  const [inscriptos, setInscriptos] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState('');
   const [notificandoId, setNotificandoId] = useState(null);
-  const [inscriptosLocal, setInscriptosLocal] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setInscriptosLocal(inscriptosFiltrados);
-  }, [inscriptosFiltrados]);
+    const cargarInscripciones = async () => {
+      setCargando(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('vista_inscriptos_dashboard')
+          .select(`
+            id,
+            nombre,
+            dni,
+            edad,
+            dia,
+            horario,
+            whatsapp,
+            estado,
+            notificado_director,
+            circuito_id,
+            circuitoNombre,
+            localidad,
+            cupoRestante,
+            disponible
+          `)
+          .order('circuitoNombre', { ascending: true })
+          .order('id', { ascending: false });
 
-  const filtrados = inscriptosLocal.filter(i =>
-    i.nombre?.toLowerCase().includes(filtroNombre.toLowerCase())
-  );
+        if (error) throw error;
+        setInscriptos(data || []);
+      } catch (err) {
+        console.error('Error al cargar inscriptos:', err);
+        setError('No se pudieron cargar las inscripciones.');
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarInscripciones();
+  }, []);
+
+  // Agrupar por circuito
+  const inscriptosPorCircuito = useMemo(() => {
+    const filtrados = inscriptos.filter(i =>
+      !filtroNombre.trim() || i.nombre?.toLowerCase().includes(filtroNombre.toLowerCase())
+    );
+
+    const grupos = {};
+    filtrados.forEach(i => {
+      const nombreCircuito = i.circuitoNombre || 'Sin circuito';
+      if (!grupos[nombreCircuito]) {
+        grupos[nombreCircuito] = [];
+      }
+      grupos[nombreCircuito].push(i);
+    });
+
+    return Object.entries(grupos).sort(([a], [b]) => a.localeCompare(b));
+  }, [inscriptos, filtroNombre]);
 
   const notificar = async (inscripto) => {
     setNotificandoId(inscripto.id);
@@ -27,22 +79,37 @@ Horario: ${inscripto.horario ?? '—'}
 WhatsApp: ${inscripto.whatsapp ?? '—'}`;
 
     const enlaceWhatsApp = `https://wa.me/5491157577039?text=${encodeURIComponent(mensaje)}`;
+    window.open(enlaceWhatsApp, '_blank');
 
     try {
-      window.open(enlaceWhatsApp, '_blank');
-
       const { error } = await supabase
         .from('inscripciones')
         .update({ notificado_director: true })
         .eq('id', inscripto.id);
 
-      if (error) {
-        console.error('❌ Error al actualizar notificado_director:', error.message);
-      } else {
-        const actualizados = inscriptosLocal.map(i =>
-          i.id === inscripto.id ? { ...i, notificado_director: true } : i
-        );
-        setInscriptosLocal(actualizados);
+      if (!error) {
+        const {  nuevosDatos } = await supabase
+          .from('vista_inscriptos_dashboard')
+          .select(`
+            id,
+            nombre,
+            dni,
+            edad,
+            dia,
+            horario,
+            whatsapp,
+            estado,
+            notificado_director,
+            circuito_id,
+            circuitoNombre,
+            localidad,
+            cupoRestante,
+            disponible
+          `)
+          .order('circuitoNombre', { ascending: true })
+          .order('id', { ascending: false });
+
+        setInscriptos(nuevosDatos || []);
       }
     } catch (err) {
       console.error('❌ Error en notificación:', err);
@@ -51,95 +118,120 @@ WhatsApp: ${inscripto.whatsapp ?? '—'}`;
     }
   };
 
+  if (error) {
+    return (
+      <section id="inscriptos" className="space-y-6">
+        <h2 className="text-xl font-bold text-gray-800">👥 Inscriptos</h2>
+        <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+          ❌ {error}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="inscriptos" className="space-y-6">
-      <h2 className="text-xl font-bold">👥 Inscriptos</h2>
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          value={filtroNombre}
-          onChange={e => setFiltroNombre(e.target.value)}
-          className="bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200 text-sm w-full sm:max-w-sm"
-        />
-
-        <div className="bg-[#FEF3C7] text-[#92400E] px-3 py-2 rounded-full text-sm font-medium inline-block shadow-sm">
-          🔔 {filtrados.filter(i => !i.notificado_director).length} sin notificar
+        <h2 className="text-xl font-bold text-gray-800">👥 Inscriptos por Circuito</h2>
+        <div className="bg-yellow-100 text-yellow-800 px-3 py-2 rounded-full text-sm font-medium">
+          🔔 {inscriptos.filter(i => !i.notificado_director).length} sin notificar
         </div>
       </div>
 
-      <div className="overflow-auto bg-white rounded-xl shadow p-4">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-[#64748B] font-semibold">
-            <tr>
-              <th className="px-3 py-2 text-left">Nombre</th>
-              <th className="px-3 py-2 text-left">DNI</th>
-              <th className="px-3 py-2 text-left">Edad</th>
-              <th className="px-3 py-2 text-left">Circuito</th>
-              <th className="px-3 py-2 text-left">Día</th>
-              <th className="px-3 py-2 text-left">Horario</th>
-              <th className="px-3 py-2 text-left">Localidad</th>
-              <th className="px-3 py-2 text-left">Estado</th>
-              <th className="px-3 py-2 text-left">Cupo</th>
-              <th className="px-3 py-2 text-left">Notificación</th>
-              <th className="px-3 py-2 text-left">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtrados.map((i, idx) => {
-              const incompleto = !i.edad || !i.dia || !i.horario;
+      <input
+        type="text"
+        placeholder="Buscar por nombre..."
+        value={filtroNombre}
+        onChange={(e) => setFiltroNombre(e.target.value)}
+        className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-verde"
+      />
 
-              return (
-                <tr key={idx} className={`border-t ${incompleto ? 'bg-red-50' : 'hover:bg-gray-50'}`}>
-                  <td className="px-3 py-2">{i.nombre ?? '—'}</td>
-                  <td className="px-3 py-2">{i.dni ?? '—'}</td>
-                  <td className="px-3 py-2">{i.edad ?? '—'}</td>
-                  <td className="px-3 py-2">{i.circuitoNombre ?? '—'}</td>
-                  <td className="px-3 py-2">{i.dia ?? '—'}</td>
-                  <td className="px-3 py-2">{i.horario ?? '—'}</td>
-                  <td className="px-3 py-2">{i.localidad ?? '—'}</td>
-                  <td className="px-3 py-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${i.disponible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {i.disponible ? '🟢 Disponible' : '⛔️ No disponible'}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2">
-                    {typeof i.cupoRestante === 'number' ? (
-                      <span className={`text-xs font-medium ${i.cupoRestante <= 5 ? 'text-red-600' : 'text-gray-700'}`}>
-                        {i.cupoRestante} restantes
-                      </span>
-                    ) : '—'}
-                  </td>
-                  <td className="px-3 py-2 text-center">
-                    {i.notificado_director ? (
-                      <span className="text-green-600 text-sm">✅</span>
-                    ) : (
-                      <span className="text-yellow-600 text-sm">🔔</span>
-                    )}
-                    {incompleto && (
-                      <div className="text-red-600 text-xs mt-1">⚠️ Incompleto</div>
-                    )}
-                  </td>
-                  <td className="px-3 py-2 space-y-1">
-                    {!i.notificado_director && i.disponible ? (
-                      <button
-                        onClick={() => notificar(i)}
-                        disabled={notificandoId === i.id || incompleto}
-                        className="bg-[#00B884] text-white px-3 py-1 rounded text-xs hover:bg-[#00966e] disabled:opacity-50"
-                      >
-                        {notificandoId === i.id ? 'Notificando…' : 'WhatsApp + registrar'}
-                      </button>
-                    ) : (
-                      <span className="text-gray-400 text-xs">—</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {cargando ? (
+        <div className="bg-white p-6 rounded-xl shadow text-gray-500">
+          Cargando inscripciones...
+        </div>
+      ) : inscriptosPorCircuito.length === 0 ? (
+        <div className="bg-white p-6 rounded-xl shadow text-gray-500">
+          No hay inscripciones para mostrar.
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {inscriptosPorCircuito.map(([circuitoNombre, lista]) => (
+            <div key={circuitoNombre} className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">{circuitoNombre}</h3>
+                  <p className="text-sm text-gray-600">{lista.length} inscripto(s)</p>
+                </div>
+                {typeof lista[0]?.cupoRestante === 'number' && (
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      lista[0].cupoRestante <= 0
+                        ? 'bg-red-100 text-red-800'
+                        : lista[0].cupoRestante <= 5
+                        ? 'bg-orange-100 text-orange-800'
+                        : 'bg-green-100 text-green-800'
+                    }`}
+                  >
+                    {lista[0].cupoRestante <= 0 ? 'Cupo lleno' : `${lista[0].cupoRestante} cupos`}
+                  </span>
+                )}
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100 text-gray-600 font-semibold">
+                    <tr>
+                      <th className="px-4 py-3 text-left">Nombre</th>
+                      <th className="px-4 py-3 text-left">Edad</th>
+                      <th className="px-4 py-3 text-left">Día</th>
+                      <th className="px-4 py-3 text-left">Horario</th>
+                      <th className="px-4 py-3 text-left">WhatsApp</th>
+                      <th className="px-4 py-3 text-left">Notificado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {lista.map((i) => (
+                      <tr key={i.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 font-medium">{i.nombre || '—'}</td>
+                        <td className="px-4 py-3">{i.edad ?? '—'}</td>
+                        <td className="px-4 py-3">{i.dia || '—'}</td>
+                        <td className="px-4 py-3">{i.horario || '—'}</td>
+                        <td className="px-4 py-3">
+                          {i.whatsapp ? (
+                            <a
+                              href={`https://wa.me/549${i.whatsapp}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline text-sm"
+                            >
+                              {i.whatsapp}
+                            </a>
+                          ) : (
+                            '—'
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {i.notificado_director ? (
+                            <span className="text-green-600 text-xl">✅</span>
+                          ) : (
+                            <button
+                              onClick={() => notificar(i)}
+                              disabled={notificandoId === i.id}
+                              className="bg-[#00B884] text-white px-3 py-1 rounded text-xs hover:bg-[#00966e] disabled:opacity-50 transition"
+                            >
+                              {notificandoId === i.id ? 'Enviando...' : 'Notificar'}
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

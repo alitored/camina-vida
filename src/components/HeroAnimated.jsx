@@ -19,7 +19,7 @@ export default function HeroAnimated() {
     <section
       className="relative w-full min-h-[80dvh] flex items-center justify-center text-center px-4 overflow-hidden"
       style={{
-        backgroundColor: '#123524',
+        backgroundColor: '#178f55ff',
         color: 'white',
         transition: 'opacity 0.8s ease-out',
       }}
@@ -28,10 +28,10 @@ export default function HeroAnimated() {
       <div
         className="absolute inset-0 flex justify-center items-center pointer-events-none"
         style={{
-          backgroundImage: "url('/images/grupo.webp')",
+          backgroundImage: "url('/images/caminata-plus.webp')",
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center 85%',
-          backgroundSize: '95%',
+          backgroundPosition: 'center 100%',
+          backgroundSize: '100%',
           opacity: 0.25,
           zIndex: 0,
         }}

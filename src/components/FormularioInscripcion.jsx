@@ -20,7 +20,8 @@ export default function FormularioInscripcion({ circuitoId, nombreCircuito, onCl
   useEffect(() => {
     async function obtenerOpciones() {
       try {
-        const res = await fetch(`/api/circuitos/${circuitoId}`);
+        // ✅ Ruta corregida: /api/caminatas
+        const res = await fetch(`/api/caminatas/${circuitoId}`);
         const data = await res.json();
         if (res.ok) {
           setOpcionesDia(data.opciones_dia || []);

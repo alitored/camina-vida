@@ -3,11 +3,19 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import InscripcionModal from './InscripcionModal';
 
-export default function CircuitoCard({ circuito, mostrarBotonReserva }) {
-  const pathname = usePathname();
-  const esDashboard = pathname?.startsWith('/dashboard');
-  const esHome = pathname === '/' || pathname?.startsWith('/circuitos');
+// ✅ Formateo de horarios: "9,10" → "9hs y 10hs"
+function formatearHorarios(horarios) {
+  const array = Array.isArray(horarios)
+    ? horarios
+    : typeof horarios === 'string'
+    ? horarios.split(',').map(h => h.trim())
+    : [];
+  const conHs = array.filter(Boolean).map(h => `${h}hs`);
+  if (conHs.length === 0) return '⚠️ Horarios faltantes';
+  return conHs.length === 1 ? conHs[0] : conHs.join(' y ');
+}
 
+export default function CircuitoCard({ circuito, mostrarBotonReserva = false }) {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const {
@@ -31,86 +39,99 @@ export default function CircuitoCard({ circuito, mostrarBotonReserva }) {
     ? dias.split(',').map(d => d.trim())
     : [];
 
-  const horariosArray = Array.isArray(horarios)
-    ? horarios
-    : typeof horarios === 'string'
-    ? horarios.split(',').map(h => h.trim())
-    : [];
-
-  const tieneFaltantes =
-    !foto ||
-    !distancia ||
-    horariosArray.length === 0 ||
-    !punto_encuentro ||
-    cupo_total === null;
-
   const puedeInscribirse = estado !== false;
 
-  const cardClass = `
-    card-circuito p-4 rounded-xl overflow-hidden border transition-all
-    ${esDashboard ? 'bg-white shadow-sm hover:shadow-lg' : ''}
-    ${esHome ? 'bg-card border-verde hover:shadow-xl hover:border-verde-oscuro' : ''}
-    ${tieneFaltantes ? 'border-yellow-400' : ''}
-  `;
-
   return (
-    <>
-      <div className={cardClass}>
-        <div className="relative h-32 w-full mb-2">
-          <img
-            src={foto || '/images/circuitos/default.jpg'}
-            alt={nombre}
-            className="w-full h-full object-cover rounded-t-xl"
-          />
-          {localidad && (
-            <div className="absolute bottom-0 left-0 bg-black/40 text-white text-xs px-2 py-1 rounded-tr-xl">
-              {localidad}
-            </div>
-          )}
+    <div className="bg-white rounded-xl shadow p-6 flex flex-col transition hover:shadow-lg">
+      <img
+        src={foto || '/images/circuitos/default.jpg'}
+        alt={nombre}
+        className="w-full h-40 object-cover rounded-t-xl mb-4"
+      />
+      <div className="space-y-2">
+        <div className="flex justify-between items-start">
+          <h3 className="font-bold text-gray-800">{nombre || '—'}</h3>
+          <span className="bg-[#F1FDF7] text-[#00B884] text-xs font-bold px-2 py-1 rounded-full">
+            {cupo_total ?? 0}
+          </span>
         </div>
 
-        <div className="px-2 pb-4 space-y-2">
-          <h3 className="text-lg font-semibold text-texto-oscuro">{nombre}</h3>
-          <p className="text-sm text-muted">{descripcion || '—'}</p>
+        {/* Alias */}
+        {alias && (
+          <p className="text-xs text-gray-500">🏷️ Alias: {alias}</p>
+        )}
 
-          <ul className="text-sm text-texto-oscuro space-y-1">
-            <li>📏 {distancia ? `${distancia} m` : 'Distancia no definida'}</li>
-            <li>📅 {diasArray.length > 0 ? diasArray.join(', ') : 'Días no definidos'}</li>
-            <li>
-              🕒{' '}
-              {horariosArray.length > 0
-                ? horariosArray.map(h => `${h}hs`).join(', ')
-                : '⚠️ Horarios faltantes'}
-            </li>
-            <li>📍 {punto_encuentro || '⚠️ Punto de encuentro faltante'}</li>
-            <li>👥 {cupo_total !== null ? `${cupo_total} cupos` : '— cupos'}</li>
-            <li>🏷️ Alias: {alias || '—'}</li>
-          </ul>
+        {/* Descripción */}
+        {descripcion && (
+          <p className="text-sm text-gray-600 italic">"{descripcion}"</p>
+        )}
 
-          {!puedeInscribirse && (
-            <p className="text-sm text-red-600">⚠️ Este circuito está inactivo</p>
-          )}
+        {/* Distancia */}
+        <p className="text-sm text-[#64748B]">
+          📏 {distancia ? `${distancia} m` : 'Distancia no definida'}
+        </p>
 
-          {mostrarBotonReserva && puedeInscribirse && (
-            <button
-              type="button"
-              onClick={() => setMostrarFormulario(true)}
-              className="mt-3 w-full px-4 py-2 text-sm font-semibold rounded transition
-                         bg-gradient-to-r from-blue-600 to-blue-400 text-white hover:brightness-110"
+        {/* Días y horarios */}
+        <p className="text-sm text-[#64748B]">
+          📅 {diasArray.length > 0 ? diasArray.join(', ') : 'Días no definidos'}
+        </p>
+        <p className="text-sm text-[#64748B]">
+          🕒 {formatearHorarios(horarios)}
+        </p>
+
+        {/* Punto de encuentro con Google Maps */}
+        <p className="text-xs text-[#64748B]">
+          📍{' '}
+          {punto_encuentro ? (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(punto_encuentro)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline hover:text-blue-800"
             >
-              ➕ Sumarme
-            </button>
+              {punto_encuentro}
+            </a>
+          ) : (
+            '⚠️ Punto de encuentro faltante'
           )}
-        </div>
+        </p>
+
+        {/* Estado */}
+        {!puedeInscribirse && (
+          <p className="text-xs text-red-600">⚠️ Este circuito está inactivo</p>
+        )}
+
+        {/* Botón de inscripción */}
+        {mostrarBotonReserva && puedeInscribirse && (
+          <div className="pt-2">
+            <button
+              className="bg-[#00B884] text-white text-sm font-semibold px-3 py-1 rounded hover:bg-[#00966e] w-full"
+              onClick={() => setMostrarFormulario(true)}
+            >
+              Sumarme
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Modal de inscripción */}
       {mostrarFormulario && (
-        <InscripcionModal
-          circuitoId={id}
-          nombreCircuito={nombre}
-          onClose={() => setMostrarFormulario(false)}
-        />
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          onClick={() => setMostrarFormulario(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <InscripcionModal
+              circuitoId={id}
+              nombreCircuito={nombre}
+              onClose={() => setMostrarFormulario(false)}
+            />
+          </div>
+        </div>
       )}
-    </>
+    </div>
   );
 }

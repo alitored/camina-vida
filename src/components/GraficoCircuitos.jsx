@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import supabase from '@/lib/supabase';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -20,56 +20,80 @@ export default function GraficoCircuitos() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function cargarDatos() {
+    const cargarDatos = async () => {
       setCargando(true);
       setError(null);
-      const { data, error } = await supabase
-        .from('vista_inscriptos_por_circuito')
-        .select('circuito, cantidad');
+      try {
+        const { data, error } = await supabase
+          .from('vista_inscriptos_por_circuito')
+          .select('circuito, cantidad');
 
-      if (error) {
-        setError(error.message);
+        if (error) throw error;
+        // Filtrar datos inválidos
+        const validos = (data || []).filter(d => d.circuito && d.cantidad != null);
+        setDatos(validos);
+      } catch (err) {
+        setError(err.message || 'Error al cargar el gráfico');
+      } finally {
         setCargando(false);
-        return;
       }
-
-      setDatos(data || []);
-      setCargando(false);
-    }
+    };
 
     cargarDatos();
   }, []);
 
-  const chartData = {
-    labels: datos.map(d => d.circuito),
-    datasets: [
-      {
-        label: 'Inscriptos por circuito',
-        data: datos.map(d => d.cantidad),
-        backgroundColor: '#60a5fa',
-      },
-    ],
-  };
+  // Preparar datos para Chart.js
+  const chartData = useMemo(() => {
+    return {
+      labels: datos.map(d => d.circuito),
+      datasets: [
+        {
+          label: 'Inscriptos',
+          data: datos.map(d => d.cantidad),
+          backgroundColor: '#00B884', // color de Camina Vida
+          borderRadius: 4,
+        },
+      ],
+    };
+  }, [datos]);
 
   const chartOptions = {
     plugins: {
       title: {
         display: true,
-        text: '📊 Inscriptos por circuito',
+        text: '📊 Circuitos más elegidos',
+        font: { size: 16 },
       },
-      legend: {
-        display: false,
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context) => `Inscriptos: ${context.raw}`,
+        },
       },
     },
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1 },
+        grid: { color: '#f3f4f6' },
+      },
+      x: {
+        grid: { display: false },
+      },
+    },
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 h-64">
-      {error && <p className="text-red-600 text-sm">❌ Error: {error}</p>}
+    <div className="bg-white rounded-xl shadow p-4 h-80">
+      {error && <p className="text-red-600 text-sm mb-2">❌ {error}</p>}
       {cargando ? (
-        <p className="text-gray-500 text-sm">Cargando gráfico...</p>
+        <div className="flex items-center justify-center h-full text-gray-500">
+          Cargando gráfico...
+        </div>
+      ) : datos.length === 0 ? (
+        <p className="text-center text-gray-500 py-8">No hay datos para mostrar</p>
       ) : (
         <Bar data={chartData} options={chartOptions} />
       )}

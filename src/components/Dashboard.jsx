@@ -8,6 +8,8 @@ import DashboardResumen from './DashboardResumen';
 import DashboardCircuitos from './DashboardCircuitos';
 import DashboardInscriptos from './DashboardInscriptos';
 import DashboardComparativo from './DashboardComparativo';
+import GraficoDiasHorarios from './GraficoDiasHorarios';
+
 
 
 export default function Dashboard() {

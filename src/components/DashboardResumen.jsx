@@ -1,31 +1,116 @@
+// src/components/DashboardResumen.jsx
 'use client';
+import { useState, useEffect, useMemo } from 'react';
+import supabase from '@/lib/supabase';
 
-export default function DashboardResumen({ inscriptosFiltrados = [] }) {
-  const edades = inscriptosFiltrados.map(i => i.edad).filter(e => typeof e === 'number' && e > 0);
-  const promedio = edades.length ? Math.round(edades.reduce((a, b) => a + b, 0) / edades.length) : '—';
-  const min = edades.length ? Math.min(...edades) : '—';
-  const max = edades.length ? Math.max(...edades) : '—';
+export default function DashboardResumen() {
+  const [inscriptos, setInscriptos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      setCargando(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('vista_inscriptos_dashboard')
+          .select('id, nombre, edad, circuitoNombre');
+
+        if (error) throw error;
+        setInscriptos(data || []);
+      } catch (err) {
+        console.error('Error al cargar datos para resumen:', err);
+        setError('No se pudieron cargar los datos del resumen.');
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarDatos();
+  }, []);
+
+  const totalInscriptos = inscriptos.length;
+
+  const inscriptosPorCircuito = useMemo(() => {
+    const grupos = {};
+    inscriptos.forEach(i => {
+      const nombre = i.circuitoNombre || 'Sin circuito';
+      grupos[nombre] = (grupos[nombre] || 0) + 1;
+    });
+    return Object.entries(grupos).sort((a, b) => b[1] - a[1]);
+  }, [inscriptos]);
+
+  const { edadPromedio, edadMin, edadMax } = useMemo(() => {
+    const edades = inscriptos
+      .map(i => i.edad)
+      .filter(edad => typeof edad === 'number' && edad > 0);
+
+    if (edades.length === 0) {
+      return { edadPromedio: null, edadMin: null, edadMax: null };
+    }
+
+    const suma = edades.reduce((acc, edad) => acc + edad, 0);
+    const promedio = Math.round(suma / edades.length);
+    const min = Math.min(...edades);
+    const max = Math.max(...edades);
+
+    return { edadPromedio: promedio, edadMin: min, edadMax: max };
+  }, [inscriptos]);
+
+  if (error) {
+    return (
+      <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+        ❌ {error}
+      </div>
+    );
+  }
 
   return (
-    <section id="resumen" className="space-y-8">
-      {/* Tarjetas de resumen */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-[#64748B] mb-1">Promedio de edad</div>
-          <div className="text-xl font-bold">{promedio} años</div>
-          <div className="text-sm text-[#64748B]">Rango: {min} - {max}</div>
+    <section className="space-y-6">
+      <h2 className="text-xl font-bold text-gray-800 text-center">📊 Resumen de Inscripciones</h2>
+
+      {cargando ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white p-5 rounded-2xl shadow animate-pulse flex flex-col items-center justify-center">
+              <div className="h-6 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            </div>
+          ))}
         </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-[#64748B] mb-1">Participantes activos</div>
-          <div className="text-xl font-bold">{inscriptosFiltrados.length}</div>
-          <div className="text-sm text-[#64748B]">Último mes</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-[#64748B] mb-1">Satisfacción</div>
-          <div className="text-xl font-bold">4.8 / 5</div>
-          <div className="text-sm text-[#64748B]">Basado en encuestas</div>
-        </div>
-      </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Tarjeta titulo="Total de inscriptos" valor={totalInscriptos} color="bg-blue-100 text-blue-800" />
+            <Tarjeta titulo="Edad promedio" valor={edadPromedio ?? '—'} color="bg-green-100 text-green-800" />
+            <Tarjeta titulo="Edad más joven" valor={edadMin ?? '—'} color="bg-yellow-100 text-yellow-800" />
+            <Tarjeta titulo="Edad más avanzada" valor={edadMax ?? '—'} color="bg-purple-100 text-purple-800" />
+          </div>
+
+          {inscriptosPorCircuito.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">Inscriptos por circuito</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {inscriptosPorCircuito.map(([circuito, cantidad]) => (
+                  <Tarjeta key={circuito} titulo={circuito} valor={cantidad} color="bg-gray-100 text-gray-800" />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </section>
+  );
+}
+
+function Tarjeta({ titulo, valor, color }) {
+  return (
+    <div className="bg-white p-5 rounded-2xl shadow border border-gray-200 flex flex-col items-center justify-center min-h-[120px]">
+      <p className="text-sm text-gray-600 text-center mb-3">{titulo}</p>
+      <span className={`text-xl font-bold px-4 py-2 rounded-full ${color} inline-flex items-center justify-center min-w-[60px]`}>
+        {valor}
+      </span>
+    </div>
   );
 }

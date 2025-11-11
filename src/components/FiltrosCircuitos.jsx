@@ -2,24 +2,40 @@
 import { useState, useEffect } from 'react';
 import { Filter, RefreshCw, Search } from 'lucide-react';
 
+// 🔧 Función de normalización
+function normalizarHorarios(horarios) {
+  if (Array.isArray(horarios)) {
+    return horarios.map(h => h.toString().trim()).filter(Boolean);
+  }
+  if (typeof horarios === 'string') {
+    return horarios
+      .split(',')
+      .map(h => h.toString().trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
 export default function FiltrosCircuitos({ circuitos, onFiltrar }) {
   const [diaSeleccionado, setDiaSeleccionado] = useState('');
   const [horarioSeleccionado, setHorarioSeleccionado] = useState('');
   const [localidadSeleccionada, setLocalidadSeleccionada] = useState('');
   const [busqueda, setBusqueda] = useState('');
 
-  const diasUnicos = [...new Set(circuitos.flatMap(c => c.dias || []))].sort();
-  const horariosUnicos = [...new Set(circuitos.flatMap(c => c.horarios || []))].sort();
+  // ✅ Normalización aplicada aquí
+  const diasUnicos = [...new Set(circuitos.flatMap(c => Array.isArray(c.dias) ? c.dias : (c.dias?.split(',') || [])).flat().map(d => d.toString().trim()).filter(Boolean))].sort();
+  const horariosUnicos = [...new Set(circuitos.flatMap(c => normalizarHorarios(c.horarios)))].sort();
   const localidadesUnicas = [...new Set(circuitos.map(c => c.localidad).filter(Boolean))].sort();
 
   useEffect(() => {
     const filtrados = circuitos.filter((c) => {
       const coincideDia = diaSeleccionado
-        ? Array.isArray(c.dias) && c.dias.includes(diaSeleccionado)
+        ? (Array.isArray(c.dias) ? c.dias : (c.dias?.split(',') || [])).map(d => d.toString().trim()).includes(diaSeleccionado)
         : true;
 
+      // ✅ Normalización aplicada aquí
       const coincideHorario = horarioSeleccionado
-        ? Array.isArray(c.horarios) && c.horarios.includes(horarioSeleccionado)
+        ? normalizarHorarios(c.horarios).includes(horarioSeleccionado)
         : true;
 
       const coincideLocalidad = localidadSeleccionada
@@ -37,7 +53,7 @@ export default function FiltrosCircuitos({ circuitos, onFiltrar }) {
     });
 
     onFiltrar(filtrados);
-  }, [diaSeleccionado, horarioSeleccionado, localidadSeleccionada, busqueda, circuitos]);
+  }, [diaSeleccionado, horarioSeleccionado, localidadSeleccionada, busqueda, circuitos, onFiltrar]);
 
   const limpiarFiltros = () => {
     setDiaSeleccionado('');
