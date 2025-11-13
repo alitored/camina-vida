@@ -78,7 +78,7 @@ Día: ${inscripto.dia}
 Horario: ${inscripto.horario}h
 WhatsApp: ${inscripto.whatsapp ?? '—'}`;
 
-    const enlaceWhatsApp = `https://wa.me/5491157577039?text=${encodeURIComponent(mensaje)}`;
+    const enlaceWhatsApp = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
     window.open(enlaceWhatsApp, '_blank');
 
     await supabase.from('inscripciones')

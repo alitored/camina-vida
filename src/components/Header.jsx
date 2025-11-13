@@ -137,7 +137,7 @@ export default function Header() {
                 Cancelar
               </button>
               <a
-                href="https://wa.me/5491112345678?text=Hola%20!%20Quiero%20reservar%20mi%20clase%20prueba"
+                href="https://wa.me/5491151501147?text=Hola%20!%20Quiero%20reservar%20mi%20clase%20prueba"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary text-sm"

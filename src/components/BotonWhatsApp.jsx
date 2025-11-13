@@ -5,7 +5,7 @@ export default function BotonWhatsApp({ inscripto }) {
   const [notificado, setNotificado] = useState(inscripto.notificado_director);
 
   const mensaje = `Nuevo inscripto:\nNombre: ${inscripto.nombre}\nEdad: ${inscripto.edad}\nCircuito: ${inscripto.nombre_circuito}\nDía: ${inscripto.dia}\nHorario: ${inscripto.horario}`;
-  const enlace = `https://wa.me/5491157577039?text=${encodeURIComponent(mensaje)}`;
+  const enlace = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
 
   const manejarClick = async () => {
     try {

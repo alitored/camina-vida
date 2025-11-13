@@ -3,7 +3,7 @@
 export default function BotonWhatsapFlot() {
   return (
     <a
-      href="https://wa.me/5491112345678?text=Hola%20!%20Quiero%20consultar%20sobre%20Camina%20Vida"
+      href="https://wa.me/5491151501147?text=Hola%20!%20Quiero%20consultar%20sobre%20Camina%20Vida"
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[9999] bg-green-500 hover:bg-green-600 text-white rounded-full shadow-xl p-4 transition-all"

@@ -34,7 +34,7 @@ export async function GET() {
     const inscriptos = data.map(i => {
       const circuitoNombre = i.circuitos?.NombreCircuito ?? '—';
       const mensaje = `Nuevo inscripto:\nNombre: ${i.nombre ?? '—'}\nEdad: ${i.edad ?? '—'}\nWhatsApp: ${i.whatsapp ?? '—'}\nCircuito: ${circuitoNombre}`;
-      const enlaceWhatsApp = `https://wa.me/5491157577039?text=${encodeURIComponent(mensaje)}`;
+      const enlaceWhatsApp = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
 
       return {
         id: i.id,

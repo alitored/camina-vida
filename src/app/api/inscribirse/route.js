@@ -140,7 +140,7 @@ export async function POST(req) {
     await transporter.sendMail(mailOptions);
 
     const mensaje = `Nuevo inscripto:\nNombre: ${nombre}\nEdad: ${edad}\nCircuito: ${nombre_circuito}\nDía: ${dia}\nHorario: ${horario}`;
-    const enlaceWhatsApp = `https://wa.me/5491157577039?text=${encodeURIComponent(mensaje)}`;
+    const enlaceWhatsApp = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
 
     return Response.json({ success: true, estado: estadoInscripcion, enlaceWhatsApp }, { status: 200 });
   } catch (err) {
