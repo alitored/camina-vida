@@ -30,8 +30,8 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contacto</h3>
             <ul className="space-y-2 text-sm text-white/80">
-              <li>📧 <a href="mailto:hola@caminatassaludables.com" className="hover:underline">hola@caminatassaludables.com</a></li>
-              <li>📱 <a href="https://wa.me/5491112345678" target="_blank" rel="noopener noreferrer" className="hover:underline">+54 9 11 1234-5678</a></li>
+              <li>📧 <a href="mailto:caminavidacontacto@gmail.com" className="hover:underline">hola@caminatassaludables.com</a></li>
+              <li>📱 <a href="https://wa.me/5491151501147" target="_blank" rel="noopener noreferrer" className="hover:underline">+54 9 11 1234-5678</a></li>
             </ul>
           </div>
 
