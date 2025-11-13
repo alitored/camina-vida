@@ -68,9 +68,9 @@ export default function DashboardInscriptos() {
   }, [inscriptos, filtroNombre]);
 
   const notificar = async (inscripto) => {
-    setNotificandoId(inscripto.id);
+  setNotificandoId(inscripto.id);
 
-    const mensaje = `Nuevo inscripto:
+  const mensaje = `Nuevo inscripto:
 Nombre: ${inscripto.nombre}
 Edad: ${inscripto.edad ?? '—'}
 Circuito: ${inscripto.circuitonombre}
@@ -78,19 +78,30 @@ Día: ${inscripto.dia}
 Horario: ${inscripto.horario}h
 WhatsApp: ${inscripto.whatsapp ?? '—'}`;
 
-    const enlaceWhatsApp = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
-    window.open(enlaceWhatsApp, '_blank');
+  const enlaceWhatsApp = `https://wa.me/5491151501147?text=${encodeURIComponent(mensaje)}`;
+  window.open(enlaceWhatsApp, '_blank');
 
-    await supabase.from('inscripciones')
+  try {
+    const { error } = await supabase
+      .from('inscripciones')
       .update({ notificado_director: true })
       .eq('id', inscripto.id);
 
-    setNotificandoId(null);
-  };
+    if (error) throw error;
 
-  if (error) {
-    return <div className="bg-red-100 text-red-800 p-4 rounded-lg">❌ {error}</div>;
+    // 🔄 Actualizar estado local
+    setInscriptos(prev =>
+      prev.map(i =>
+        i.id === inscripto.id ? { ...i, notificado_director: true } : i
+      )
+    );
+  } catch (err) {
+    console.error('❌ Error al actualizar notificación:', err.message);
+  } finally {
+    setNotificandoId(null);
   }
+};
+
 
   return (
     <section id="inscriptos" className="space-y-6">
