@@ -1,44 +1,33 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import supabase from '@/lib/supabase';
 
 export default function Login() {
-  const [user, setUser] = useState('');
-  const [pass, setPass] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ user, pass }),
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (res.status === 401) {
-        setError('Usuario o contraseña incorrectos');
-        return;
-      }
+    if (error) {
+      console.error('❌ Error de login:', error.message);
+      setError('Usuario o contraseña incorrectos');
+      return;
+    }
 
-      if (!res.ok) {
-        console.error(`Error HTTP: ${res.status}`);
-        throw new Error('Error del servidor');
-      }
-
-      const result = await res.json();
-
-      if (result.success) {
-        router.push('/dashboard');
-      } else {
-        setError('Usuario o contraseña incorrectos');
-      }
-    } catch (err) {
-      console.error('Error de login:', err);
-      setError('Hubo un problema al iniciar sesión');
+    if (data?.session) {
+      router.push('/dashboard');
+    } else {
+      setError('No se pudo iniciar sesión');
     }
   };
 
@@ -47,18 +36,20 @@ export default function Login() {
       <form onSubmit={handleLogin} className="w-full max-w-sm p-6 bg-white rounded shadow">
         <h1 className="mb-4 text-xl font-bold">Iniciar sesión</h1>
         <input
-          type="text"
-          placeholder="Usuario"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full mb-2 p-2 border rounded"
+          required
         />
         <input
           type="password"
           placeholder="Contraseña"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full mb-4 p-2 border rounded"
+          required
         />
         <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded">
           Entrar
