@@ -1,88 +1,125 @@
 'use client';
 import { useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
-import Link from 'next/link';
 
-export default function DashboardCircuitos() {
-  const [circuitos, setCircuitos] = useState([]);
+export default function DashboardCoordinadores() {
+  const [postulantes, setPostulantes] = useState([]);
+  const [filtroHorario, setFiltroHorario] = useState('');
+  const [filtroCircuito, setFiltroCircuito] = useState('');
 
   useEffect(() => {
-    async function cargar() {
-      const { data, error } = await supabase
-        .from('vista_circuitos_completa')
-        .select(`
-          circuito_id,
-          "NombreCircuito",
-          "Alias",
-          "Descripcion",
-          "Dias",
-          "Horarios",
-          "Distancia",
-          "Estado",
-          foto,
-          "Localidad",
-          url,
-          cupo_total,
-          cantidad_inscriptos,
-          cupo_restante,
-          punto_encuentro,
-          estado_legible,
-          cupo_lleno,
-          disponible_para_inscripcion
-        `);
+    fetchPostulantes();
+  }, [filtroHorario, filtroCircuito]);
 
-      if (error) {
-        console.error('❌ Error al cargar circuitos:', error.message);
-        return;
-      }
+  const fetchPostulantes = async () => {
+    let query = supabase.from('coordinadores_postulantes').select('*');
 
-      setCircuitos(data || []);
+    if (filtroHorario) query = query.contains('horarios', [filtroHorario]);
+    if (filtroCircuito) query = query.contains('circuitos', [filtroCircuito]);
+
+    const { data, error } = await query;
+    if (error) console.error(error);
+    else setPostulantes(data);
+  };
+
+  const aprobarPostulante = async (p) => {
+    const circuito = prompt('Asignar circuito:', p.circuitos[0] || '');
+    const horario = prompt('Asignar horario:', p.horarios[0] || '');
+
+    const { error } = await supabase
+      .from('coordinadores_postulantes')
+      .update({
+        estado: 'aprobado',
+        circuito_asignado: circuito,
+        horario_asignado: horario,
+        aprobado_en: new Date(),
+        aprobado_por: 'admin',
+      })
+      .eq('id', p.id);
+
+    if (!error) {
+      await fetch('/api/send-aprobacion', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: p.email,
+          nombre: p.nombre,
+          circuito,
+          horario,
+        }),
+      });
+      fetchPostulantes();
     }
+  };
 
-    cargar();
-  }, []);
+  const rechazarPostulante = async (id) => {
+    const { error } = await supabase
+      .from('coordinadores_postulantes')
+      .update({ estado: 'rechazado' })
+      .eq('id', id);
 
-  function circuitoIncompleto(c) {
-    return !c.foto || !c.Alias || !c.Horarios || !c.Localidad || c.Estado === null || c.cupo_total === null;
-  }
+    if (!error) fetchPostulantes();
+  };
 
   return (
-    <section className="p-6">
-      <h1 className="text-2xl font-bold mb-4">🧭 Circuitos</h1>
+    <main className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Postulaciones de Coordinadores</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {circuitos.map(c => (
-          <div key={c.circuito_id} className="border p-4 rounded shadow bg-white">
-            <h2 className="text-lg font-semibold">{c.NombreCircuito}</h2>
+      <div className="flex gap-4 mb-6">
+        <select value={filtroHorario} onChange={(e) => setFiltroHorario(e.target.value)} className="p-2 border rounded">
+          <option value="">Todos los horarios</option>
+          <option>Mañana (8:00–11:00)</option>
+          <option>Tarde (14:00–17:00)</option>
+          <option>Atardecer (17:00–20:00)</option>
+        </select>
 
-            <p className="text-sm text-gray-600 mt-2">
-              Localidad: {c.Localidad || '—'}<br />
-              Horarios: {Array.isArray(c.Horarios) ? c.Horarios.join(', ') : c.Horarios || '—'}<br />
-              Cupo total: {c.cupo_total ?? '—'}<br />
-              Estado: {c.estado_legible}<br />
-              Inscriptos: {c.cantidad_inscriptos > 0 ? `👥 ${c.cantidad_inscriptos}` : '⚠️ Sin inscriptos'}<br />
-              Cupo restante: {c.cupo_restante}<br />
-              {c.cupo_lleno && <span className="text-red-600">⚠️ Cupo lleno</span>}
-            </p>
-
-            {circuitoIncompleto(c) && (
-              <p className="text-red-600 text-sm mt-2">⚠️ Circuito incompleto</p>
-            )}
-
-            <div className="flex gap-4 mt-3 text-sm">
-              <Link
-                href={`/dashboard?vista=inscriptos&filtro=${encodeURIComponent(c.NombreCircuito)}`}
-                className="text-blue-600 hover:underline"
-              >
-                Ver inscriptos
-              </Link>
-              {c.disponible_para_inscripcion && (
-                <span className="text-green-600 font-medium">🟢 Disponible para inscripción</span>
-              )}
-            </div>
-          </div>
-        ))}
+        <select value={filtroCircuito} onChange={(e) => setFiltroCircuito(e.target.value)} className="p-2 border rounded">
+          <option value="">Todos los circuitos</option>
+          <option>Parque Central</option>
+          <option>Costanera Sur</option>
+          <option>Reserva Ecológica</option>
+          <option>Barrio Histórico</option>
+        </select>
       </div>
-    </section>
+
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Nombre</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2">Teléfono</th>
+            <th className="border p-2">Horarios</th>
+            <th className="border p-2">Circuitos</th>
+            <th className="border p-2">Estado</th>
+            <th className="border p-2">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {postulantes.map((p) => (
+            <tr key={p.id}>
+              <td className="border p-2">{p.nombre}</td>
+              <td className="border p-2">{p.email}</td>
+              <td className="border p-2">{p.telefono}</td>
+              <td className="border p-2">{p.horarios.join(', ')}</td>
+              <td className="border p-2">{p.circuitos.join(', ')}</td>
+              <td className="border p-2">{p.estado}</td>
+              <td className="border p-2">
+                <button
+                  onClick={() => aprobarPostulante(p)}
+                  className="bg-green-600 text-white px-2 py-1 rounded mr-2"
+                >
+                  Aprobar
+                </button>
+                <button
+                  onClick={() => rechazarPostulante(p.id)}
+                  className="bg-red-600 text-white px-2 py-1 rounded"
+                >
+                  Rechazar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </main>
   );
 }
