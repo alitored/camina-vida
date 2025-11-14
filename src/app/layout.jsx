@@ -1,4 +1,3 @@
-// src/app/layout.jsx
 import './globals.css';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/Header';
@@ -7,6 +6,7 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '600', '700'],
   display: 'swap',
+  variable: '--font-sans',
 });
 
 export const metadata = {
@@ -26,8 +26,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" data-scroll-behavior="smooth" className={poppins.className}>
-      <body className="bg-fondo text-texto font-sans">
+    <html lang="es" className={poppins.variable}>
+      <body className="font-sans">
         <Header />
         <main className="min-h-screen">{children}</main>
         {/* <Footer /> */}

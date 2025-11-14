@@ -1,11 +1,21 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardResumen from '@/components/DashboardResumen';
-import DashboardCircuitos from '@/components/DashboardCircuitos';
-import DashboardInscriptos from '@/components/DashboardInscriptos';
-import DashboardComparativo from '@/components/DashboardComparativo';
+
+// 📊 Estadísticas
+import DashboardResumen from '@/components/Dashboard/Estadisticas/DashboardResumen';
+import DashboardComparativo from '@/components/Dashboard/Estadisticas/DashboardComparativo';
+
+// 🛣️ Circuitos
+import DashboardCircuitos from '@/components/Dashboard/Circuitos/DashboardCircuitos';
+
+// 👥 Inscriptos
+import DashboardInscriptos from '@/components/Dashboard/Inscriptos/DashboardInscriptos';
+
+// 🔐 Logout
 import LogoutButton from '@/components/LogoutButton';
+
+// 🔗 Supabase
 import supabase from '@/lib/supabase';
 
 export default function DashboardPage() {
@@ -18,7 +28,7 @@ export default function DashboardPage() {
   // 🔐 Verificar sesión activa
   useEffect(() => {
     const verificarSesion = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
       const session = data?.session;
 
       if (!session) {
@@ -39,6 +49,7 @@ export default function DashboardPage() {
         const { data: inscData, error: inscError } = await supabase
           .from('vista_inscriptos_dashboard')
           .select('*');
+
         const { data: circData, error: circError } = await supabase
           .from('vista_circuitos_completa')
           .select('*');
@@ -68,12 +79,14 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-fondo text-texto font-sans p-4 sm:p-6 md:p-8 space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-verde-oscuro">Dashboard Camina Vida</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-verde-oscuro">
+          Dashboard Camina Vida
+        </h1>
         <LogoutButton />
       </div>
 
       <DashboardResumen inscriptos={inscriptos} circuitos={circuitos} />
-      <DashboardCircuitos />
+      <DashboardCircuitos circuitos={circuitos} />
       {!loading && <DashboardInscriptos inscriptos={inscriptos} />}
       <DashboardComparativo inscriptos={inscriptos} circuitos={circuitos} />
     </main>
