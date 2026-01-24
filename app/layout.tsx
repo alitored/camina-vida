@@ -4,18 +4,24 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const inter = Inter({ 
   subsets: ['latin'], 
-  variable: '--font-inter' 
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700', '800', '900'] 
 })
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'], 
-  variable: '--font-serif' 
+  variable: '--font-serif',
+  weight: ['400', '600', '700', '800', '900'],
+  style: ['italic', 'normal']
 })
 
 export const metadata = {
   title: 'Caminata Terapéutica Plaza Irlanda | Camina Vida',
   description: 'Unite a nuestra comunidad en Caballito el 14 de febrero. Una experiencia de mindfulness y bienestar integral en Plaza Irlanda.',
   keywords: ['Caminata terapéutica', 'Plaza Irlanda', 'Caballito', 'Salud mental', 'Mindfulness Buenos Aires', 'Bienestar emocional'],
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: 'Camina Vida - Plaza Irlanda 2026',
     description: 'Reserva tu lugar para la caminata del 14 de febrero en Caballito.',
@@ -29,7 +35,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className="scroll-smooth">
-      <body className={`${inter.variable} ${playfair.variable} font-sans bg-irlanda-crema text-irlanda-dark antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans bg-irlanda-crema text-irlanda-dark`}>
         {children}
         <WhatsAppFloat />
       </body>

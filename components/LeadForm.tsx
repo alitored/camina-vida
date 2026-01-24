@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default function LeadForm() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,19 +39,17 @@ export default function LeadForm() {
 
   return (
     <div className="flex justify-center w-full">
-      {/* BOTÓN DISPARADOR CON SHINE */}
+      {/* BOTÓN DE ACTIVACIÓN CON PESO MÁXIMO */}
       <motion.button 
         onClick={() => { setIsOpen(true); setStep(1); }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.98 }}
-        className="relative overflow-hidden bg-irlanda-dark text-white px-20 py-6 rounded-full font-bold text-xl shadow-2xl transition-all flex items-center gap-4 border border-white/10"
+        className="relative overflow-hidden bg-irlanda-dark text-white px-16 py-7 rounded-full font-black text-xl shadow-2xl flex items-center gap-4 border-2 border-white/20"
       >
-        <span className="bg-white/10 p-2 rounded-full">
-          <motion.div animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <ArrowRight size={22} className="text-irlanda-coral" />
-          </motion.div>
+        <span className="bg-irlanda-coral p-2 rounded-full shadow-lg">
+          <ArrowRight size={22} className="text-white" strokeWidth={3} />
         </span>
-        <span className="relative z-10 uppercase tracking-widest text-sm">Reservar mi lugar ahora</span>
+        <span className="relative z-10 uppercase tracking-tighter">Reservar mi lugar ahora</span>
         <motion.div 
           animate={{ left: ["-100%", "200%"] }}
           transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", repeatDelay: 3 }}
@@ -64,68 +61,87 @@ export default function LeadForm() {
         {isOpen && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] bg-[#f9fafb] flex items-center justify-center p-6"
+            className="fixed inset-0 z-[10000] bg-irlanda-crema flex items-center justify-center p-6"
           >
-            <button onClick={() => setIsOpen(false)} className="absolute top-8 right-8 text-irlanda-dark/40 hover:text-irlanda-coral transition-colors">
-              <X size={32} />
+            <button onClick={() => setIsOpen(false)} className="absolute top-8 right-8 text-irlanda-dark hover:text-irlanda-coral transition-colors">
+              <X size={44} strokeWidth={4} />
             </button>
 
             <div className="max-w-2xl w-full">
               {status !== "success" ? (
                 <div className="space-y-12">
-                  <div className="w-full h-1 bg-irlanda-dark/5 rounded-full overflow-hidden">
+                  {/* BARRA DE PROGRESO */}
+                  <div className="w-full h-3 bg-irlanda-dark/10 rounded-full overflow-hidden">
                     <motion.div className="h-full bg-irlanda-coral" initial={{ width: 0 }} animate={{ width: `${(step / totalSteps) * 100}%` }} />
                   </div>
 
                   <AnimatePresence mode="wait">
-                    <motion.div key={step} initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="min-h-[350px] flex flex-col justify-center">
+                    <motion.div key={step} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="min-h-[350px] flex flex-col justify-center">
+                      <label className="text-irlanda-coral font-black tracking-[0.25em] text-sm uppercase mb-6">Paso {step} de {totalSteps}</label>
+                      
                       {step === 1 && (
                         <div className="space-y-6">
-                          <label className="text-irlanda-coral font-bold tracking-widest text-xs uppercase">1 → ¿Cómo te llamás?</label>
-                          <input autoFocus type="text" value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} placeholder="Tu nombre..." className="w-full bg-transparent text-4xl md:text-6xl font-serif italic border-b border-irlanda-dark/20 py-4 outline-none focus:border-irlanda-coral" />
+                          <h2 className="text-5xl md:text-7xl font-serif font-black text-irlanda-dark italic leading-tight">¿Cómo te llamás?</h2>
+                          <input autoFocus type="text" value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} placeholder="Tu nombre..." className="w-full bg-transparent text-4xl md:text-6xl font-bold border-b-4 border-irlanda-dark py-4 outline-none focus:border-irlanda-coral text-irlanda-dark placeholder:text-irlanda-dark/10" />
                         </div>
                       )}
                       {step === 2 && (
                         <div className="space-y-6">
-                          <label className="text-irlanda-coral font-bold tracking-widest text-xs uppercase">2 → Tu mejor email</label>
-                          <input autoFocus type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} placeholder="email@correo.com" className="w-full bg-transparent text-4xl md:text-6xl font-serif italic border-b border-irlanda-dark/20 py-4 outline-none focus:border-irlanda-coral" />
+                          <h2 className="text-5xl md:text-7xl font-serif font-black text-irlanda-dark italic leading-tight">Tu mejor email</h2>
+                          <input autoFocus type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} placeholder="email@correo.com" className="w-full bg-transparent text-4xl md:text-6xl font-bold border-b-4 border-irlanda-dark py-4 outline-none focus:border-irlanda-coral text-irlanda-dark placeholder:text-irlanda-dark/10" />
                         </div>
                       )}
                       {step === 3 && (
                         <div className="space-y-6">
-                          <label className="text-irlanda-coral font-bold tracking-widest text-xs uppercase block text-center">3 → ¿Qué edad tenés?</label>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          <h2 className="text-4xl md:text-5xl font-serif font-black text-irlanda-dark italic mb-8">¿Qué edad tenés?</h2>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {ages.map((age) => (
-                              <button key={age} onClick={() => { setFormData({...formData, edad: age}); nextStep(); }} className={`p-5 rounded-xl border text-sm font-bold transition-all ${formData.edad === age ? 'bg-irlanda-dark text-white' : 'bg-white border-irlanda-dark/10 hover:border-irlanda-coral'}`}>{age}</button>
+                              <button key={age} onClick={() => { setFormData({...formData, edad: age}); nextStep(); }} className={`p-6 rounded-2xl border-2 text-base font-black transition-all ${formData.edad === age ? 'bg-irlanda-dark text-white border-irlanda-dark shadow-xl' : 'bg-white border-irlanda-dark/20 text-irlanda-dark hover:border-irlanda-coral'}`}>{age}</button>
                             ))}
                           </div>
                         </div>
                       )}
                       {step === 4 && (
                         <div className="space-y-6">
-                          <label className="text-irlanda-coral font-bold tracking-widest text-xs uppercase">4 → Tu WhatsApp</label>
-                          <input autoFocus type="tel" value={formData.whatsapp} onChange={(e) => setFormData({...formData, whatsapp: e.target.value})} placeholder="11..." className="w-full bg-transparent text-4xl md:text-6xl font-serif italic border-b border-irlanda-dark/20 py-4 outline-none focus:border-irlanda-coral" />
+                          <h2 className="text-5xl md:text-7xl font-serif font-black text-irlanda-dark italic leading-tight">Tu WhatsApp</h2>
+                          <input autoFocus type="tel" value={formData.whatsapp} onChange={(e) => setFormData({...formData, whatsapp: e.target.value})} placeholder="11 1234 5678" className="w-full bg-transparent text-4xl md:text-6xl font-bold border-b-4 border-irlanda-dark py-4 outline-none focus:border-irlanda-coral text-irlanda-dark placeholder:text-irlanda-dark/10" />
                         </div>
                       )}
                     </motion.div>
                   </AnimatePresence>
 
-                  <div className="flex items-center gap-4">
-                    {step > 1 && <button onClick={prevStep} className="p-5 rounded-2xl border border-irlanda-dark/10 hover:bg-white transition-all"><ArrowLeft size={24} /></button>}
+                  <div className="flex items-center gap-6">
+                    {step > 1 && (
+                      <button onClick={prevStep} className="p-6 rounded-2xl border-2 border-irlanda-dark/20 text-irlanda-dark hover:bg-white transition-all shadow-md">
+                        <ArrowLeft size={32} strokeWidth={4} />
+                      </button>
+                    )}
                     {step < totalSteps ? (
-                      <button onClick={nextStep} disabled={step === 1 ? !formData.nombre : step === 2 ? !formData.email : false} className="flex-1 bg-irlanda-dark text-white py-5 rounded-2xl font-bold text-xl flex items-center justify-center gap-2 hover:bg-irlanda-coral transition-all">Continuar <ArrowRight size={20} /></button>
+                      <button 
+                        onClick={nextStep} 
+                        disabled={step === 1 ? !formData.nombre : step === 2 ? !formData.email : false} 
+                        className="flex-1 bg-irlanda-dark text-white py-6 rounded-2xl font-black text-2xl flex items-center justify-center gap-2 hover:bg-irlanda-coral disabled:opacity-20 transition-all shadow-xl uppercase"
+                      >
+                        Siguiente <ArrowRight size={28} strokeWidth={4}/>
+                      </button>
                     ) : (
-                      <button onClick={handleSubmit} disabled={status === "loading" || !formData.whatsapp} className="flex-1 bg-irlanda-coral text-white py-5 rounded-2xl font-bold text-xl transition-all">{status === "loading" ? "Procesando..." : "Finalizar Registro"}</button>
+                      <button 
+                        onClick={handleSubmit} 
+                        disabled={status === "loading" || !formData.whatsapp} 
+                        className="flex-1 bg-irlanda-coral text-white py-6 rounded-2xl font-black text-2xl hover:bg-[#e44d2a] transition-all shadow-xl uppercase tracking-widest"
+                      >
+                        {status === "loading" ? "Procesando..." : "Finalizar Registro"}
+                      </button>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="text-center space-y-6">
-                  <CheckCircle2 size={100} className="mx-auto text-irlanda-verde" />
-                  <h2 className="text-5xl font-serif italic">¡Inscripción Exitosa!</h2>
-                  <p className="text-xl text-irlanda-dark/60">Te enviamos los detalles a tu email.</p>
-                  <button onClick={() => { setIsOpen(false); setStatus("idle"); setStep(1); }} className="underline font-bold text-irlanda-coral">Cerrar</button>
-                </div>
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-8">
+                  <CheckCircle2 size={130} className="mx-auto text-irlanda-verde" strokeWidth={3} />
+                  <h2 className="text-6xl md:text-7xl font-serif font-black italic text-irlanda-dark">¡Inscripto!</h2>
+                  <p className="text-2xl font-bold text-irlanda-dark/70">Revisá tu email ahora mismo.</p>
+                  <button onClick={() => { setIsOpen(false); setStatus("idle"); setStep(1); }} className="text-irlanda-coral font-black uppercase tracking-widest border-b-4 border-irlanda-coral pb-1 text-xl">Volver al inicio</button>
+                </motion.div>
               )}
             </div>
           </motion.div>

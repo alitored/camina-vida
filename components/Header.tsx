@@ -21,68 +21,71 @@ export default function Header() {
     { name: "Beneficios", href: "#beneficios" },
     { name: "Método", href: "#metodo" },
     { name: "Detalles", href: "#detalles" },
-    { name: "Comunidad", href: "#beneficios" },
   ];
 
   return (
     <header 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"
+        scrolled ? "bg-white/95 backdrop-blur-md shadow-lg py-3" : "bg-transparent py-6"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative">
-        <Link 
-          href="/" 
-          className="text-2xl font-serif italic text-irlanda-dark font-bold tracking-tighter"
-        >
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        
+        <Link href="/" className="text-3xl font-serif font-black italic text-irlanda-dark tracking-tighter">
           Camina Vida
         </Link>
 
-        {/* Navegación Desktop */}
-        <nav className="hidden md:flex items-center gap-10">
+        {/* MENÚ DESKTOP - PESO MÁXIMO */}
+        <nav className="hidden md:flex items-center space-x-12">
           {navLinks.map((link) => (
             <Link 
               key={link.name} 
-              href={link.href} 
-              className="text-[11px] font-bold uppercase tracking-[0.2em] text-irlanda-dark/70 hover:text-irlanda-coral transition-colors"
+              href={link.href}
+              className="text-[13px] font-black uppercase tracking-[0.25em] text-irlanda-dark hover:text-irlanda-coral transition-colors"
             >
               {link.name}
             </Link>
           ))}
           <Link
             href="#reserva"
-            className="bg-irlanda-coral text-white text-xs font-bold uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl shadow-orange-900/20 hover:bg-[#e44d2a] hover:scale-105 transition-all"
+            className="bg-irlanda-dark text-white text-[13px] font-black uppercase tracking-widest px-10 py-4 rounded-2xl shadow-xl hover:bg-irlanda-coral transition-all"
           >
             Reserva ahora
           </Link>
         </nav>
 
-        {/* Botón menú móvil */}
+        {/* BOTÓN MÓVIL REFORZADO */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden p-2 text-irlanda-dark"
+          className="md:hidden p-2 text-irlanda-dark focus:outline-none"
           aria-label="Menú"
         >
-          {open ? <X size={28} /> : <Menu size={28} />}
+          {open ? <X size={38} strokeWidth={3} /> : <Menu size={38} strokeWidth={3} />}
         </button>
       </div>
 
-      {/* Menú móvil COMPLETO */}
+      {/* MENÚ MÓVIL INMERSIVO */}
       <AnimatePresence>
         {open && (
           <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-irlanda-soft overflow-hidden"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            className="fixed inset-0 bg-white z-[60] flex flex-col p-8"
           >
-            <nav className="flex flex-col space-y-6 px-8 py-10">
+            <div className="flex justify-end mb-12">
+              <button onClick={() => setOpen(false)}>
+                <X size={44} strokeWidth={3} className="text-irlanda-dark" />
+              </button>
+            </div>
+            
+            <nav className="flex flex-col space-y-10">
               {navLinks.map((link) => (
                 <Link 
                   key={link.name} 
                   href={link.href} 
                   onClick={() => setOpen(false)}
-                  className="text-lg font-serif text-irlanda-dark border-b border-irlanda-soft pb-2"
+                  className="text-5xl font-serif font-black text-irlanda-dark border-b-4 border-irlanda-soft pb-4 italic"
                 >
                   {link.name}
                 </Link>
@@ -90,9 +93,9 @@ export default function Header() {
               <Link
                 href="#reserva"
                 onClick={() => setOpen(false)}
-                className="bg-irlanda-coral text-white px-6 py-4 rounded-2xl font-bold text-center shadow-lg"
+                className="bg-irlanda-coral text-white px-6 py-6 rounded-3xl font-black text-2xl text-center shadow-2xl uppercase tracking-tighter mt-4"
               >
-                Reserva ahora
+                Inscribirme ahora
               </Link>
             </nav>
           </motion.div>
