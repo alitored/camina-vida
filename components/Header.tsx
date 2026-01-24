@@ -59,21 +59,21 @@ export default function Header() {
                 <button className={`flex items-center gap-1.5 py-4 ${navLinkStyle}`}>
                   Categorías <ChevronDown size={14} className={`transition-transform duration-300 ${openMega ? "rotate-180" : ""}`} />
                 </button>
-
                 <div className={`absolute right-0 top-full transition-all duration-300 ${openMega ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible pointer-events-none"}`}>
                   <div className="w-[700px] bg-white shadow-2xl rounded-[2.5rem] p-10 grid grid-cols-3 gap-10 border border-orange-50 mt-2">
                     <div className="space-y-4">
-                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-semibold">Bienestar</h4>
-                      <Link href="/#beneficios" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-normal"><Heart size={18} /> Beneficios</Link>
-                      <Link href="/#metodo" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-normal"><Wind size={18} /> Método</Link>
+                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Bienestar</h4>
+                      <Link href="/#beneficios" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-serif italic"><Heart size={18} /> Beneficios</Link>
+                      <Link href="/#metodo" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-serif italic"><Wind size={18} /> Método</Link>
+                    </div>
+                    {/* El resto de links mantienen DM Sans para claridad */}
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Recorridos</h4>
+                      <Link href="/#circuitos" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm"><Map size={18} /> Circuitos</Link>
                     </div>
                     <div className="space-y-4">
-                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-semibold">Recorridos</h4>
-                      <Link href="/#circuitos" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-normal"><Map size={18} /> Circuitos</Link>
-                    </div>
-                    <div className="space-y-4">
-                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-semibold">Social</h4>
-                      <Link href="/#social" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-medium"><Sparkles size={18} /> Social Red</Link>
+                      <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Social</h4>
+                      <Link href="/#social" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-bold"><Sparkles size={18} /> Social Red</Link>
                     </div>
                   </div>
                 </div>
@@ -81,34 +81,28 @@ export default function Header() {
               <Link href="/#beneficios" className={navLinkStyle}>Beneficios</Link>
               <Link href="/#metodo" className={navLinkStyle}>Nuestro Método</Link>
             </nav>
-
-            <button
-              onClick={openForm}
-              className={`flex items-center gap-2 px-8 py-3 rounded-full text-[13px] font-medium transition-all duration-300 active:scale-95 ${
-                scrolled ? "bg-[#FF5C35] text-white shadow-lg" : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#FF5C35]"
-              }`}
-            >
-              <Calendar size={16} /> Reservar
-            </button>
+            {/* CTA con DM Sans Bold para máximo contraste */}
+            <button onClick={openForm} className={`flex items-center gap-2 px-8 py-3 rounded-full text-[13px] font-bold transition-all duration-300 active:scale-95 ${scrolled ? "bg-[#FF5C35] text-white shadow-lg" : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#FF5C35]"}`}><Calendar size={16} /> Reservar</button>
           </div>
 
           <div className="md:hidden z-[110]">
-            <button onClick={() => setOpenMobile(true)} className={scrolled ? "text-slate-800" : "text-white"}><Menu size={32} /></button>
+            <button onClick={() => setOpenMobile(true)} className={scrolled ? "text-slate-800" : "text-white"} aria-label="Abrir menú"><Menu size={32} /></button>
           </div>
         </div>
       </header>
 
+      {/* Mobile Aside corregido con accesibilidad */}
       <aside className={`fixed top-0 right-0 h-full w-80 bg-[#FFFBF7] shadow-2xl z-[9000] p-10 transform transition-transform duration-500 ${openMobile ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex justify-between items-center mb-12">
           <Image src="/logo.webp" alt="Logo" width={60} height={60} style={{ height: "auto", width: "auto" }} />
-          <button onClick={() => setOpenMobile(false)}><X size={32} /></button>
+          <button onClick={() => setOpenMobile(false)} aria-label="Cerrar menú"><X size={32} /></button>
         </div>
-        <nav className="flex flex-col gap-8 text-2xl font-semibold text-irlanda-dark">
+        <nav className="flex flex-col gap-8 text-2xl font-bold text-irlanda-dark">
           <Link href="/#beneficios" onClick={() => setOpenMobile(false)}>Beneficios</Link>
           <Link href="/#metodo" onClick={() => setOpenMobile(false)}>Método</Link>
           <Link href="/#circuitos" onClick={() => setOpenMobile(false)}>Caminatas</Link>
         </nav>
-        <button onClick={() => { setOpenMobile(false); openForm(); }} className="w-full mt-16 px-6 py-5 bg-[#FF5C35] text-white rounded-[2rem] font-medium shadow-xl">Reservar ahora</button>
+        <button onClick={() => { setOpenMobile(false); openForm(); }} className="w-full mt-16 px-6 py-5 bg-[#FF5C35] text-white rounded-[2rem] font-bold shadow-xl">Reservar ahora</button>
       </aside>
       {openMobile && <div className="fixed inset-0 bg-black/20 z-[8000] backdrop-blur-sm" onClick={() => setOpenMobile(false)} />}
     </>
