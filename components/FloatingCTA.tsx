@@ -34,14 +34,15 @@ export default function FloatingCTA() {
         >
           <div className="pointer-events-auto bg-irlanda-dark text-white p-4 rounded-full shadow-2xl flex items-center gap-6 border border-white/10 backdrop-blur-sm pr-2 pl-6">
             <div className="flex flex-col md:flex-row md:gap-3 md:items-baseline">
-              <span className="font-black text-lg leading-none">Plaza Irlanda</span>
-              <span className="text-xs text-irlanda-coral font-bold tracking-widest uppercase mt-1 md:mt-0">14 FEB · 09:30HS</span>
+              <span className="font-sans font-bold text-lg leading-none">Plaza Irlanda</span>
+              <span className="text-xs text-irlanda-coral font-sans font-bold tracking-widest uppercase mt-1 md:mt-0">14 FEB · 09:30HS</span>
             </div>
+            {/* Texto normalizado para conversión móvil */}
             <button 
               onClick={openForm}
-              className="bg-irlanda-coral text-white px-6 py-3 rounded-full font-black text-sm uppercase flex items-center gap-2 shadow-lg hover:bg-[#e44d2a] transition-colors"
+              className="bg-irlanda-coral text-white px-6 py-3 rounded-full font-sans font-bold text-sm uppercase flex items-center gap-2 shadow-lg hover:bg-[#e44d2a] transition-colors"
             >
-              Reservar <ArrowRight size={18} strokeWidth={3} />
+              Reservar ahora <ArrowRight size={18} strokeWidth={3} />
             </button>
           </div>
         </motion.div>

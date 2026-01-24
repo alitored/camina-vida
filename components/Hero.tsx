@@ -1,86 +1,57 @@
 "use client";
 
-import Image from "next/image";
-import { ArrowDown } from "lucide-react";
-import { motion } from "framer-motion"; // Asegurate de tener framer-motion instalado
+import { useForm } from "./FormContext";
+import CountdownTimer from "./CountdownTimer";
+import { motion } from "framer-motion";
 
 export default function Hero() {
+  const { openForm } = useForm();
+
   return (
-    <section className="relative isolate min-h-[95dvh] flex items-center justify-center overflow-hidden">
-      {/* IMAGEN DE FONDO */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/gente.webp" 
-          alt="Caminata en Plaza Irlanda"
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-irlanda-dark/70 via-irlanda-dark/30 to-irlanda-crema" />
-      </div>
+    <section className="relative min-h-[95vh] md:min-h-screen flex flex-col items-center justify-center pt-20 pb-12 overflow-hidden bg-irlanda-dark text-white px-6">
+      {/* Background optimizado para contraste de CTA */}
+      <div className="absolute inset-0 z-0 bg-[url('/hero-bg.webp')] bg-cover bg-center opacity-40" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-irlanda-dark/80 via-irlanda-dark/40 to-irlanda-crema" />
 
-      <div className="text-center px-6 max-w-5xl mx-auto mt-12">
-        {/* EFECTO DE MOVIMIENTO EN LA FECHA */}
-        <motion.span 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="inline-block text-irlanda-coral font-bold tracking-[0.3em] uppercase text-[11px] mb-6"
-        >
-          Sábado <span className="relative inline-block font-black text-white underline decoration-wavy animate-pulse drop-shadow-[0_0_8px_#ff7a5c] px-1">14 de Febrero</span> • Plaza Irlanda
-        </motion.span>
+      <div className="relative z-10 max-w-4xl w-full text-center flex flex-col items-center gap-6">
+        
+        {/* Headline: Sans SemiBold (Impacto inmediato) */}
+        <h1 className="text-4xl md:text-7xl font-sans font-semibold leading-tight tracking-tight">
+          Caminata Terapéutica <br /> 
+          en Plaza Irlanda
+        </h1>
 
-        {/* TÍTULO CON REVELADO GRADUAL */}
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-[1.1]"
-        >
-          Caminata Terapéutica<br />
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="italic text-irlanda-coral"
+        {/* Countdown Timer: Visible without scroll */}
+        <div className="w-full max-w-md py-2">
+          <CountdownTimer targetDate="2026-02-14T09:30:00-03:00" />
+        </div>
+
+        {/* Propuesta de Valor: Qué + Cuándo + Dónde + Urgencia */}
+        <p className="text-lg md:text-xl font-sans font-normal text-white/90 max-w-2xl leading-relaxed">
+          Experiencia terapéutica guiada · Sábado 14 de febrero · Plaza Irlanda · Cupos limitados
+        </p>
+
+        {/* CTA PRINCIPAL: Dominante (Click Gravity) */}
+        <div className="flex flex-col items-center gap-4 mt-4 w-full">
+          <button 
+            onClick={openForm}
+            className="w-full md:w-auto bg-irlanda-coral text-white px-10 py-5 rounded-2xl font-sans font-bold text-xl md:text-2xl uppercase shadow-2xl hover:scale-105 transition-transform active:scale-95 cursor-pointer border-2 border-white/20"
           >
-            en Plaza Irlanda
-          </motion.span>
-        </motion.h1>
+            Reservá tu lugar – Cupos limitados
+          </button>
+          
+          {/* Trust Line: Autoridad inmediata */}
+          <span className="text-sm md:text-base font-sans font-medium text-white/80">
+            +200 asistentes • Guiado por profesionales certificados
+          </span>
+        </div>
 
-        {/* PARRAFO CON ENTRADA SUAVE */}
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 1 }}
-          className="mt-8 text-lg md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed"
-        >
-         Mejorá tu bienestar físico y emocional <span className="font-bold text-irlanda-coral">en una experiencia</span> guiada por coordinadores certificados.
-        </motion.p>
-
-        {/* BOTONES CON EFECTO HOVER */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 1 }}
-          className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6"
-        >
-          <motion.a 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            href="#reserva" 
-            className="btn-primary"
-          >
-            Reservá tu lugar – Cupos Limitados
-          </motion.a>
-          <motion.a 
-            whileHover={{ backgroundColor: "rgba(255,255,255,0.2)" }}
-            href="#detalles" 
-            className="px-12 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl transition-all text-center"
-          >
-            Ver detalles
-          </motion.a>
-        </motion.div>
+        {/* Credenciales: Desenfatizadas (No compiten con el CTA) */}
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-8 text-xs md:text-sm text-white/60 font-sans uppercase tracking-widest">
+          <span>Coordinadores capacitados</span>
+          <span className="hidden md:inline">•</span>
+          <span>Profesionales certificados</span>
+        </div>
       </div>
     </section>
   );
