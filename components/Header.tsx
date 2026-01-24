@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "./FormContext";
-import { Menu, X, ChevronDown, Heart, Calendar, Wind, Map, Sparkles, Activity } from "lucide-react";
+import { Menu, X, ChevronDown, Heart, Calendar, Wind, Map, Sparkles } from "lucide-react";
 
 export default function Header() {
   const { openForm } = useForm();
@@ -13,10 +13,20 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 50;
+          if (scrolled !== isScrolled) setScrolled(isScrolled);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [scrolled]);
 
   const navLinkStyle = `transition-colors duration-300 font-medium text-[13px] lg:text-sm ${
     scrolled ? "text-slate-600 hover:text-[#FF5C35]" : "text-white hover:text-orange-200"
@@ -28,39 +38,27 @@ export default function Header() {
         scrolled ? "bg-[#FFFBF7]/95 backdrop-blur-md py-2 shadow-sm border-b border-orange-50" : "bg-transparent py-4"
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          
           <div className="flex-none pr-10 z-[110]">
             <Link href="/" className="block transition-transform hover:scale-105">
               <Image 
                 src="/logo.webp" 
                 alt="Logo Camina Vida" 
-                width={scrolled ? 60 : 85} 
+                width={85} 
                 height={85} 
                 priority
-                className="object-contain"
-                style={{ 
-                  height: "auto", 
-                  width: "auto",
-                  filter: scrolled ? "none" : "drop-shadow(0px 0px 2px rgba(0,0,0,0.3))" 
-                }}
+                className={`object-contain transition-all duration-500 ${scrolled ? "w-[60px]" : "w-[85px]"}`}
+                style={{ height: "auto", width: "auto", filter: scrolled ? "none" : "drop-shadow(0px 0px 3px rgba(0,0,0,0.4))" }}
               />
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-10 ml-auto">
             <nav className="flex items-center gap-8">
-              <div 
-                className="relative" 
-                onMouseEnter={() => setOpenMega(true)} 
-                onMouseLeave={() => setOpenMega(false)}
-              >
+              <div className="relative" onMouseEnter={() => setOpenMega(true)} onMouseLeave={() => setOpenMega(false)}>
                 <button className={`flex items-center gap-1.5 py-4 ${navLinkStyle}`}>
                   Categorías <ChevronDown size={14} className={`transition-transform duration-300 ${openMega ? "rotate-180" : ""}`} />
                 </button>
-
-                <div className={`absolute right-0 top-full transition-all duration-300 ${
-                  openMega ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible pointer-events-none"
-                }`}>
+                <div className={`absolute right-0 top-full transition-all duration-300 ${openMega ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible pointer-events-none"}`}>
                   <div className="w-[700px] bg-white shadow-2xl rounded-[2.5rem] p-10 grid grid-cols-3 gap-10 border border-orange-50 mt-2">
                     <div className="space-y-4">
                       <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Bienestar</h4>
@@ -81,15 +79,7 @@ export default function Header() {
               <Link href="/#beneficios" className={navLinkStyle}>Beneficios</Link>
               <Link href="/#metodo" className={navLinkStyle}>Nuestro Método</Link>
             </nav>
-
-            <button
-              onClick={openForm}
-              className={`flex items-center gap-2 px-8 py-3 rounded-full text-[13px] font-bold transition-all duration-300 active:scale-95 ${
-                scrolled ? "bg-[#FF5C35] text-white shadow-lg" : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#FF5C35]"
-              }`}
-            >
-              <Calendar size={16} /> Reservar
-            </button>
+            <button onClick={openForm} className={`flex items-center gap-2 px-8 py-3 rounded-full text-[13px] font-bold transition-all duration-300 active:scale-95 ${scrolled ? "bg-[#FF5C35] text-white shadow-lg" : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#FF5C35]"}`}><Calendar size={16} /> Reservar</button>
           </div>
 
           <div className="md:hidden z-[110]">

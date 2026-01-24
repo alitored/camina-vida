@@ -19,39 +19,29 @@ export default function LandingPlazaIrlanda() {
     <main className="relative min-h-screen bg-irlanda-crema">
       <Header />
       <Hero />
-      
       <div className="relative z-10 -mt-12 max-w-4xl mx-auto px-6">
         <TrustBadges />
       </div>
-
       <EventDetails />
-      
       <div className="py-10">
         <CountdownTimer targetDate="2026-02-14T09:30:00-03:00" />
       </div>
-
       <IrlandaSlide />
       <Beneficios />
       <Method />
       <SocialRed />
-
       <section id="reserva" className="bg-irlanda-soft/30 py-24 border-t border-irlanda-soft/50 text-center">
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-serif font-black italic text-irlanda-dark mb-6">
-            ¿Con ganas de empezar?
-          </h2>
-          <p className="text-lg md:text-xl text-irlanda-dark/70 mb-10 font-medium leading-tight">
-            Reserva tu lugar ahora para la caminata del 14 de febrero en Plaza Irlanda y comenzá tu camino al bienestar.
-          </p>
+          <h2 className="text-4xl md:text-5xl font-serif font-black italic text-irlanda-dark mb-6">¿Con ganas de empezar?</h2>
+          <p className="text-lg md:text-xl text-irlanda-dark/70 mb-10 font-medium leading-tight">Reserva tu lugar ahora para la caminata del 14 de febrero en Plaza Irlanda y comenzá tu camino al bienestar.</p>
           <button 
             onClick={openForm} 
             className="bg-[#FF5C35] text-white px-12 py-5 rounded-2xl font-black text-xl uppercase shadow-xl hover:scale-105 transition-transform active:scale-95 cursor-pointer"
           >
-            Registrarme
+            Registrarme Gratis
           </button>
         </div>
       </section>
-
       <Footer />
     </main>
   );

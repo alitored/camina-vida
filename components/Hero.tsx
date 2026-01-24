@@ -37,14 +37,14 @@ export default function Hero() {
           transition={{ duration: 1 }}
           className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-[1.1]"
         >
-          Caminamos y <br />
+          Caminata Terapéutica<br />
           <motion.span 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
             className="italic text-irlanda-coral"
           >
-            recibimos vida
+            en Plaza Irlanda
           </motion.span>
         </motion.h1>
 
@@ -55,7 +55,7 @@ export default function Hero() {
           transition={{ delay: 0.8, duration: 1 }}
           className="mt-8 text-lg md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed"
         >
-          Regalate salud este <span className="font-bold text-irlanda-coral">14 de Febrero</span>. Una caminata guiada en Caballito para reconectar.
+         Mejorá tu bienestar físico y emocional <span className="font-bold text-irlanda-coral">en una experiencia</span> guiada por coordinadores certificados.
         </motion.p>
 
         {/* BOTONES CON EFECTO HOVER */}
@@ -71,7 +71,7 @@ export default function Hero() {
             href="#reserva" 
             className="btn-primary"
           >
-            Reservar mi lugar
+            Reservá tu lugar – Cupos Limitados
           </motion.a>
           <motion.a 
             whileHover={{ backgroundColor: "rgba(255,255,255,0.2)" }}

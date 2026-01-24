@@ -9,9 +9,17 @@ export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Aparece al scrollear
-    const handleScroll = () => setVisible(window.scrollY > 100);
-    window.addEventListener("scroll", handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setVisible(window.scrollY > 600);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -22,8 +30,6 @@ export default function FloatingCTA() {
           initial={{ y: 100, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }} 
           exit={{ y: 100, opacity: 0 }}
-          // FIX 2: Eliminado 'md:hidden' para que se vea en Desktop.
-          // Agregado max-w-fit y centrado para que se vea PRO en pantallas grandes.
           className="fixed bottom-6 left-0 right-0 z-[90] flex justify-center px-4 pointer-events-none"
         >
           <div className="pointer-events-auto bg-irlanda-dark text-white p-4 rounded-full shadow-2xl flex items-center gap-6 border border-white/10 backdrop-blur-sm pr-2 pl-6">
