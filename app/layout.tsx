@@ -13,7 +13,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata = {
-  title: 'Registro Caminata Terapéutica Plaza Irlanda | Camina Vida',
+  title: 'Caminata Terapéutica Plaza Irlanda | Camina Vida',
   description: 'Unite a nuestra comunidad en Caballito el 14 de febrero. Una experiencia de mindfulness y bienestar integral en Plaza Irlanda.',
   keywords: ['Caminata terapéutica', 'Plaza Irlanda', 'Caballito', 'Salud mental', 'Mindfulness Buenos Aires', 'Bienestar emocional'],
   openGraph: {
