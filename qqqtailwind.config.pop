@@ -1,0 +1,24 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './app/**/*.{ts,tsx,js,jsx}',
+    './components/**/*.{ts,tsx,js,jsx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        irlanda: { // Cambiado de 'event' a 'irlanda'
+          dark: '#1A2F23',
+          verde: '#2D6A4F',
+          crema: '#FDFBF7',
+          coral: '#F97316',
+          soft: '#E8F5E9',
+        }
+      },
+      borderRadius: {
+        'premium': '2rem',
+      }
+    },
+  },
+  plugins: [],
+}

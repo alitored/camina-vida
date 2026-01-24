@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-irlanda-dark: #1A2F23;
+  --color-irlanda-verde: #2D6A4F;
+  --color-irlanda-crema: #FDFBF7;
+  --color-irlanda-coral: #F97316;
+  --color-irlanda-soft: #E8F5E9;
+  
+  --radius-premium: 2rem;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-irlanda-crema);
+    color: var(--color-irlanda-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+}
