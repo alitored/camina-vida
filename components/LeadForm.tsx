@@ -112,8 +112,8 @@ export default function LeadForm() {
           ) : (
             <div className="text-center py-10 space-y-8">
               <CheckCircle2 size={80} className="mx-auto text-irlanda-verde" strokeWidth={3} />
-              <h2 className="text-4xl md:text-5xl font-serif font-black italic text-irlanda-dark">¡Inscripto!</h2>
-              <p className="text-lg font-bold text-irlanda-dark/60">Revisá tu email para los detalles.</p>
+              <h2 className="text-4xl md:text-5xl font-serif font-black italic text-irlanda-dark">¡Muy Bien, concretaste tu Reserva!</h2>
+              <p className="text-lg font-bold text-irlanda-dark/60">Revisá tu email para los detalles de la caminata.</p>
               <button onClick={closeForm} className="text-irlanda-coral font-black uppercase tracking-widest border-b-2 border-irlanda-coral pb-1 text-lg">Cerrar ventana</button>
             </div>
           )}
