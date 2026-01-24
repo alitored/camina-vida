@@ -5,7 +5,7 @@ import FloatingCTA from "@/components/FloatingCTA";
 import { FormProvider } from "@/components/FormContext";
 import LeadForm from "@/components/LeadForm";
 
-// La Sans que convierte: DM Sans para Headings directos, Body y CTAs
+// Sans para decisión y legibilidad máxima
 const dmSans = DM_Sans({ 
   subsets: ['latin'], 
   variable: '--font-dm-sans', 
@@ -13,7 +13,7 @@ const dmSans = DM_Sans({
   display: 'swap'
 })
 
-// La Serif que enamora: Playfair para acentos emocionales y citas
+// Serif para acentos emocionales y branding
 const playfair = Playfair_Display({ 
   subsets: ['latin'], 
   variable: '--font-serif', 

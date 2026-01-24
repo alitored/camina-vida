@@ -46,7 +46,7 @@ export default function Header() {
                 alt="Logo Camina Vida" 
                 width={85} 
                 height={85} 
-                priority
+                priority // Prioridad de carga para LCP
                 className={`object-contain transition-all duration-500 ${scrolled ? "w-[60px]" : "w-[85px]"}`}
                 style={{ height: "auto", width: "auto" }}
               />
@@ -66,10 +66,9 @@ export default function Header() {
                       <Link href="/#beneficios" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-serif italic"><Heart size={18} /> Beneficios</Link>
                       <Link href="/#metodo" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-serif italic"><Wind size={18} /> Método</Link>
                     </div>
-                    {/* El resto de links mantienen DM Sans para claridad */}
                     <div className="space-y-4">
                       <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Recorridos</h4>
-                      <Link href="/#circuitos" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm"><Map size={18} /> Circuitos</Link>
+                      <Link href="/#circuitos" onClick={() => setOpenMega(false)} className="flex items-center gap-3 text-slate-600 hover:text-[#FF5C35] text-sm font-medium"><Map size={18} /> Circuitos</Link>
                     </div>
                     <div className="space-y-4">
                       <h4 className="text-[10px] uppercase tracking-widest text-[#FF5C35] font-bold">Social</h4>
@@ -81,7 +80,7 @@ export default function Header() {
               <Link href="/#beneficios" className={navLinkStyle}>Beneficios</Link>
               <Link href="/#metodo" className={navLinkStyle}>Nuestro Método</Link>
             </nav>
-            {/* CTA con DM Sans Bold para máximo contraste */}
+            {/* CTA: Sans Bold para decisión inmediata */}
             <button onClick={openForm} className={`flex items-center gap-2 px-8 py-3 rounded-full text-[13px] font-bold transition-all duration-300 active:scale-95 ${scrolled ? "bg-[#FF5C35] text-white shadow-lg" : "bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#FF5C35]"}`}><Calendar size={16} /> Reservar</button>
           </div>
 
@@ -91,7 +90,7 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Aside corregido con accesibilidad */}
+      {/* Menú móvil optimizado para legibilidad rápida */}
       <aside className={`fixed top-0 right-0 h-full w-80 bg-[#FFFBF7] shadow-2xl z-[9000] p-10 transform transition-transform duration-500 ${openMobile ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex justify-between items-center mb-12">
           <Image src="/logo.webp" alt="Logo" width={60} height={60} style={{ height: "auto", width: "auto" }} />
