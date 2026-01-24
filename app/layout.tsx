@@ -1,15 +1,18 @@
+/* app/layout.tsx - Versión Optimizada */
+
 import './globals.css'
-import { DM_Sans } from 'next/font/google' // Cambiado a DM Sans
+import { DM_Sans } from 'next/font/google'
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import FloatingCTA from "@/components/FloatingCTA";
 import { FormProvider } from "@/components/FormContext";
 import LeadForm from "@/components/LeadForm";
 
-// Configuración de pesos: 400 (Regular), 500 (Medium), 600 (Semibold)
 const dmSans = DM_Sans({ 
   subsets: ['latin'], 
   variable: '--font-dm-sans', 
-  weight: ['400', '500', '600'] 
+  weight: ['400', '500', '600'],
+  display: 'swap', // Crucial: Evita el bloqueo del renderizado por fuentes
+  adjustFontFallback: true 
 })
 
 export const metadata = {
