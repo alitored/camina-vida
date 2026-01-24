@@ -6,34 +6,15 @@
   --color-irlanda-crema: #FDFBF7;
   --color-irlanda-coral: #F97316;
   --color-irlanda-soft: #E8F5E9;
-  
-  --radius-premium: 2rem;
-
-  @keyframes bounce-slow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
 }
 
 @layer base {
   body {
     background-color: var(--color-irlanda-crema);
     color: var(--color-irlanda-dark);
-    /* Desactivamos el suavizado que adelgaza la fuente en exceso */
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
+    /* Nitidez sin sacrificar el diseño */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  /* Refuerzo global de legibilidad para párrafos */
-  p {
-    font-weight: 500;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
-  }
-
-  strong {
-    font-weight: 800;
   }
 }

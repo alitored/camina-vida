@@ -1,17 +1,20 @@
+"use client";
+
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import TrustBadges from "@/components/TrustBadges";
 import EventDetails from "@/components/EventDetails";
 import CountdownTimer from "@/components/CountdownTimer";
-import IrlandaSlide from "@/components/IrlandaSlide"; // Nuevo componente
+import IrlandaSlide from "@/components/IrlandaSlide";
 import Beneficios from "@/components/Beneficios";
 import Method from "@/components/Method";
 import SocialRed from "@/components/SocialRed";
-import LeadForm from "@/components/LeadForm";
-import StickyCTA from "@/components/StickyCTA";
 import Footer from "@/components/Footer";
+import { useForm } from "@/components/FormContext"; 
 
 export default function LandingPlazaIrlanda() {
+  const { openForm } = useForm();
+
   return (
     <main className="relative min-h-screen bg-irlanda-crema">
       <Header />
@@ -27,18 +30,28 @@ export default function LandingPlazaIrlanda() {
         <CountdownTimer targetDate="2026-02-14T09:30:00-03:00" />
       </div>
 
-      {/* Sección del Circuito con Slide */}
       <IrlandaSlide />
-
       <Beneficios />
       <Method />
       <SocialRed />
 
-      <div id="reserva" className="bg-irlanda-soft/30 py-20 border-t border-irlanda-soft/50">
-        <LeadForm />
-      </div>
+      <section id="reserva" className="bg-irlanda-soft/30 py-24 border-t border-irlanda-soft/50 text-center">
+        <div className="max-w-2xl mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-serif font-black italic text-irlanda-dark mb-6">
+            ¿Con ganas de empezar?
+          </h2>
+          <p className="text-lg md:text-xl text-irlanda-dark/70 mb-10 font-medium leading-tight">
+            Reserva tu lugar ahora para la caminata del 14 de febrero en Plaza Irlanda y comenzá tu camino al bienestar.
+          </p>
+          <button 
+            onClick={openForm} 
+            className="bg-[#FF5C35] text-white px-12 py-5 rounded-2xl font-black text-xl uppercase shadow-xl hover:scale-105 transition-transform active:scale-95 cursor-pointer"
+          >
+            Registrarme
+          </button>
+        </div>
+      </section>
 
-      <StickyCTA />
       <Footer />
     </main>
   );

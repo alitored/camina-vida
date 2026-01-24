@@ -51,12 +51,7 @@ export default function CaminaVidaSocial() {
             </a>
           </div>
 
-          <div className="mt-16 inline-block">
-            <p className="text-[11px] font-bold text-irlanda-verde tracking-widest uppercase py-2 px-6 border border-irlanda-verde/20 rounded-full">
-              @caminavidaagencia
-            </p>
-          </div>
-        </motion.div>
+             </motion.div>
       </div>
 
       {/* Sombra decorativa inferior */}

@@ -1,43 +1,30 @@
 import './globals.css'
 import { Inter, Playfair_Display } from 'next/font/google'
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import FloatingCTA from "@/components/FloatingCTA";
+import { FormProvider } from "@/components/FormContext";
+import LeadForm from "@/components/LeadForm";
 
-const inter = Inter({ 
-  subsets: ['latin'], 
-  variable: '--font-inter',
-  weight: ['400', '500', '600', '700', '800', '900'] 
-})
-
-const playfair = Playfair_Display({ 
-  subsets: ['latin'], 
-  variable: '--font-serif',
-  weight: ['400', '600', '700', '800', '900'],
-  style: ['italic', 'normal']
-})
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', weight: ['400', '700', '900'] })
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif', weight: ['400', '700', '900'], style: ['italic', 'normal'] })
 
 export const metadata = {
+  metadataBase: new URL('https://www.caminavida.com.ar'), // Corrige error de consola Next.js
   title: 'Caminata Terapéutica Plaza Irlanda | Camina Vida',
-  description: 'Unite a nuestra comunidad en Caballito el 14 de febrero. Una experiencia de mindfulness y bienestar integral en Plaza Irlanda.',
-  keywords: ['Caminata terapéutica', 'Plaza Irlanda', 'Caballito', 'Salud mental', 'Mindfulness Buenos Aires', 'Bienestar emocional'],
-  icons: {
-    icon: '/favicon.ico',
-  },
-  openGraph: {
-    title: 'Camina Vida - Plaza Irlanda 2026',
-    description: 'Reserva tu lugar para la caminata del 14 de febrero en Caballito.',
-    url: 'https://www.caminavida.com.ar',
-    siteName: 'Camina Vida',
-    images: [{ url: '/og-irlanda.webp', width: 1200, height: 630 }],
-    type: 'website',
-  },
+  description: 'Unite a nuestra comunidad en Caballito el 14 de febrero.',
+  icons: { icon: '/favicon.ico' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className="scroll-smooth">
-      <body className={`${inter.variable} ${playfair.variable} font-sans bg-irlanda-crema text-irlanda-dark`}>
-        {children}
-        <WhatsAppFloat />
+      <body className={`${inter.variable} ${playfair.variable} font-sans bg-irlanda-crema text-irlanda-dark antialiased`}>
+        <FormProvider>
+          {children}
+          <LeadForm />
+          <FloatingCTA />
+          <WhatsAppFloat />
+        </FormProvider>
       </body>
     </html>
   )
