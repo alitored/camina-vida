@@ -110,7 +110,7 @@ export default function Header() {
           <Link href="/#metodo" onClick={() => setOpenMobile(false)}>Método</Link>
           <Link href="/#circuitos" onClick={() => setOpenMobile(false)}>Caminatas</Link>
         </nav>
-        <button onClick={() => { setOpenMobile(false); openForm(); }} className="w-full mt-16 px-6 py-5 bg-[#FF5C35] text-white rounded-[2rem] font-bold shadow-xl">Reservar ahora</button>
+        <button onClick={() => { setOpenMobile(false); openForm(); }} className="w-full mt-16 px-6 py-5 bg-[#FF5C35] text-white rounded-[2rem] font-bold shadow-xl">Reservá tu lugar ahora</button>
       </aside>
       {openMobile && <div className="fixed inset-0 bg-black/20 z-[8000] backdrop-blur-sm" onClick={() => setOpenMobile(false)} />}
     </>

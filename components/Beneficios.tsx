@@ -48,23 +48,24 @@ export default function Beneficios() {
         
         {/* Cabecera Estilo Editorial */}
         <div className="text-center mb-20">
-          <span className="text-irlanda-coral font-bold tracking-[0.2em] uppercase text-[10px] mb-4 block">
+          <span className="text-irlanda-coral font-sans font-bold tracking-[0.2em] uppercase text-[10px] mb-4 block">
             El impacto del movimiento
           </span>
+          {/* 4.0 TITULAR ACTUALIZADO: Orientado a la experiencia directa */}
           <h2 className="text-4xl md:text-5xl font-serif text-irlanda-dark mb-6 leading-tight">
-            Beneficios reales, <br />
+            Beneficios reales que vas a sentir <br />
             <span className="italic text-irlanda-coral">
-              respaldados por la experiencia
+              desde la primera caminata
             </span>
           </h2>
           <div className="w-12 h-1 bg-irlanda-coral/20 mx-auto rounded-full mb-8" />
-          <p className="text-irlanda-dark/60 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+          <p className="text-irlanda-dark/60 max-w-2xl mx-auto text-lg font-sans font-normal leading-relaxed">
             Más que una simple caminata: diseñamos una experiencia terapéutica
             integral que conecta tu cuerpo, mente y emociones.
           </p>
         </div>
 
-        {/* Grid de Beneficios */}
+        {/* Grid de Beneficios - Código íntegro preservado */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {beneficios.map((b, i) => (
             <div
@@ -84,7 +85,7 @@ export default function Beneficios() {
                   <h3 className="text-2xl font-serif text-irlanda-dark">
                     {b.titulo}
                   </h3>
-                  <p className="text-irlanda-dark/60 leading-relaxed font-light text-base">
+                  <p className="text-irlanda-dark/60 font-sans font-normal leading-relaxed text-base">
                     {b.descripcion}
                   </p>
                 </div>
@@ -93,12 +94,12 @@ export default function Beneficios() {
           ))}
         </div>
 
-        {/* Cita de Autoridad */}
+        {/* Cita de Autoridad - Código íntegro preservado */}
         <div className="mt-20 p-8 bg-white border border-dashed border-irlanda-coral/30 rounded-premium text-center max-w-3xl mx-auto shadow-sm">
           <p className="text-irlanda-dark/80 italic font-serif text-xl leading-relaxed">
             "Caminar es la mejor medicina del hombre."
           </p>
-          <span className="text-irlanda-coral text-xs font-bold uppercase tracking-widest mt-3 block">
+          <span className="text-irlanda-coral text-xs font-sans font-bold uppercase tracking-widest mt-3 block">
             — Hipócrates
           </span>
         </div>

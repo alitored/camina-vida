@@ -13,7 +13,8 @@ export default function FloatingCTA() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setVisible(window.scrollY > 600);
+          // 6.0: Activación solo después del primer scroll (fuera del Hero)
+          setVisible(window.scrollY > 800);
           ticking = false;
         });
         ticking = true;
@@ -37,12 +38,12 @@ export default function FloatingCTA() {
               <span className="font-sans font-bold text-lg leading-none">Plaza Irlanda</span>
               <span className="text-xs text-irlanda-coral font-sans font-bold tracking-widest uppercase mt-1 md:mt-0">14 FEB · 09:30HS</span>
             </div>
-            {/* Texto normalizado para conversión móvil */}
+            {/* 2.1 CTA NORMALIZADO */}
             <button 
               onClick={openForm}
               className="bg-irlanda-coral text-white px-6 py-3 rounded-full font-sans font-bold text-sm uppercase flex items-center gap-2 shadow-lg hover:bg-[#e44d2a] transition-colors"
             >
-              Reservar ahora <ArrowRight size={18} strokeWidth={3} />
+              Reservá tu lugar – Cupos limitados <ArrowRight size={18} strokeWidth={3} />
             </button>
           </div>
         </motion.div>
